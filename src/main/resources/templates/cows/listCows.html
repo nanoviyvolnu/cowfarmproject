@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista vacilor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color:white;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #38444d;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a, .dropbtn {
+            display: inline-block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover, .dropdown:hover .dropbtn {
+            background-color: red;
+        }
+
+        li.dropdown {
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {background-color: #f1f1f1;}
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .active {
+            background-color: #04AA6D;
+        }
+
+        #cows {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #cows td, #employers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #cows tr:nth-child(even){background-color: #f2f2f2;}
+
+        #cows tr:hover {background-color: #ddd;}
+
+        #cows th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">VACI</a>
+        <div class="dropdown-content">
+            <a href="/adminPanel/listaVaci">Lista vacilor</a>
+            <a href="/adminPanel/adaugaVaca">Creaza o vaca noua</a>
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">ANGAJATI</a>
+        <div class="dropdown-content">
+            <a href="/adminPanel/listaAngajati">Lista angajatilor</a>
+            <a href="/adminPanel/adaugaAngajat">Adauga un angajat nou</a>
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">FURAJE</a>
+        <div class="dropdown-content">
+            <a href="/adminPanel/listaFuraje">Lista furaje</a>
+            <a href="/adminPanel/adaugaFuraje">Adauga furaje noi</a>
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">PRODUSE ZOOTEHNICE</a>
+        <div class="dropdown-content">
+            <a href="/adminPanel/listaProduseZootehnice">Lista produse zootehnice</a>
+            <a href="/adminPanel/adaugaProduseZootehnice">Adauga produse zootehnice noi</a>
+        </div>
+    </li>
+    <li style="float:right"><a class="active" href="/logout">LOGOUT</a></li>
+</ul>
+<h2>Lista vacilor</h2>
+<form style="justify-content:center; display: flex;">
+    <div th:switch="${listaVaci}">
+            <table id="cows">
+                <thead>
+                <tr>
+                    <th>Poza</th>
+                    <th>Rasa</th>
+                    <th>Masa kilograme initiala</th>
+                    <th>Masa kilograme la moment</th>
+                    <th>Starea sanatatii</th>
+                    <th>Forma de achizitie</th>
+                    <th>Data luarii evidente</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="vacaModel : ${vacaModelList}">
+                    <td><img th:src="${vacaModel.getPhotosImagePathCow}" width="270" height="250"/></td>
+                    <td th:text="${vacaModel.rasa}"></td>
+                    <td th:text="${vacaModel.masaKgInitiala}"></td>
+                    <td th:text="${vacaModel.masaKgMoment}"></td>
+                    <td th:text="${vacaModel.stareaSanatatii}"></td>
+                    <td th:text="${vacaModel.formaAchizitie}"></td>
+                    <td th:text="${vacaModel.dataLuariiEvidenta}"></td>
+                    <td th:text="${vacaModel.genul}"></td>
+                    <td th:text="${vacaModel.categorie}"></td>
+                    <td><a th:href="@{editeazaVaca/{idVaca}(idVaca=${vacaModel.idVaca})}">Editeaza</a></td>
+                    <td><a th:href="@{stergeVaca/{idVaca}(idVaca=${vacaModel.idVaca})}">Sterge</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    <br>
+    <br>
+</form>
+<p align="center"><a href="/adminPanel/adaugaVaca">Adauga vaci</a></p>
+</body>
+</html>

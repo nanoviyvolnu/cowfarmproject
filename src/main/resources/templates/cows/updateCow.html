@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<title>Editeaza vaca</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+  *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+  body {
+    background-color:white;
+  }
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #38444d;
+  }
+
+  li {
+    float: left;
+  }
+
+  li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+
+  li a:hover, .dropdown:hover .dropbtn {
+    background-color: red;
+  }
+
+  li.dropdown {
+    display: inline-block;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+  }
+
+  .dropdown-content a:hover {background-color: #f1f1f1;}
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  .active {
+    background-color: #04AA6D;
+  }
+
+</style>
+</head>
+<body>
+<ul>
+  <li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">VACI</a>
+    <div class="dropdown-content">
+      <a href="/adminPanel/listaVaci">Lista vacilor</a>
+      <a href="/adminPanel/adaugaVaca">Creaza o vaca noua</a>
+    </div>
+  </li>
+  <li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">ANGAJATI</a>
+    <div class="dropdown-content">
+      <a href="/adminPanel/listaAngajati">Lista angajatilor</a>
+      <a href="/adminPanel/adaugaAngajat">Adauga un angajat nou</a>
+    </div>
+  </li>
+  <li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">FURAJE</a>
+    <div class="dropdown-content">
+      <a href="/adminPanel/listaFuraje">Lista furaje</a>
+      <a href="/adminPanel/adaugaFuraje">Adauga furaje noi</a>
+    </div>
+  </li>
+  <li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">PRODUSE ZOOTEHNICE</a>
+    <div class="dropdown-content">
+      <a href="/adminPanel/listaProduseZootehnice">Lista produse zootehnice</a>
+      <a href="/adminPanel/adaugaProduseZootehnice">Adauga produse zootehnice noi</a>
+    </div>
+  </li>
+  <li style="float:right"><a class="active" href="/logout">LOGOUT</a></li>
+</ul>
+<h2 align="center">Editeaza vaca</h2>
+<form action="#" th:action="@{/adminPanel/listaVaci/editeazaVaca/save}" th:object="${vacaModel}" th:method="POST" enctype="multipart/form-data">
+  <label for="id">ID</label>
+  <input readonly type="number" th:field="*{idVaca}" id="id" placeholder="ID">
+  <br/>
+  <label for="photoCow">Poza vaca</label>
+  <br>
+  <input type="hidden" th:field="*{photo}">
+  <input type="file" id="photoCow" name="image" accept="image/*">
+  <br>
+  <label for="raceCow">Rasa</label>
+  <br>
+  <input type="text" th:field="*{rasa}" id="raceCow" placeholder="Rasa">
+  <br>
+  <label for="intialMassKg">Masa killograme initiala</label>
+  <br>
+  <input type="text" th:field="*{masaKgInitiala}" id="intialMassKg" placeholder="Masa kilograme initiala">
+  <br>
+  <label for="momentanMassKg">Masa killograme la moment</label>
+  <br>
+  <input type="text" th:field="*{masaKgMoment}" id="momentanMassKg" placeholder="Masa killograme la moment">
+  <br>
+  <label for="stareaSanatatii">Starea sanatatii</label>
+  <br>
+  <input type="text" th:field="*{stareaSanatatii}" id="stareaSanatatii" placeholder="Starea sanatatii">
+  <br>
+  <label for="formaAchizitie">Forma de achizitie</label>
+  <br>
+  <input type="text" th:field="*{formaAchizitie}" id="formaAchizitie" placeholder="Forma de achizitie">
+  <br>
+  <label for="dataLuariiEvidenta">Data luarii de evidenta a vacii</label>
+  <br>
+  <input type="date"  th:field="*{dataLuariiEvidenta}" id="dataLuariiEvidenta" placeholder="yyyy-MM-dd">
+  <br>
+  <br>
+  <label for="gen">Genul</label>
+  <select id="gen" th:field="*{genul}">
+    <option value="M">M</option>
+    <option value="F">F</option>
+  </select>
+  <br>
+  <br>
+  <label for="categorie">Categorie</label>
+  <select id="categorie" th:field="*{categorie}">
+    <option value="Bou">Bou</option>
+    <option value="Vaca">Vaca</option>
+    <option value="Viteu">Viteu</option>
+  </select>
+  <input type="submit" value="Editeaza vaca">
+</form>
+</body>
+</html>
