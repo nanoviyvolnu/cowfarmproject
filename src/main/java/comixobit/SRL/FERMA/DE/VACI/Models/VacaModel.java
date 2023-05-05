@@ -8,15 +8,16 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "vaca")
 @RequiredArgsConstructor
-@Getter
-@Setter
+@Data
 public class VacaModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idVaca;
 
     @Column(name = "Photo", length = 65)
@@ -28,15 +29,15 @@ public class VacaModel {
 
     @NotNull(message = "Coloana nu poate fi pustie!")
     @Column(name = "Masa_kg_initiala")
-    private short masaKgInitiala;
+    private int masaKgInitiala;
 
     @NotNull(message = "Coloana nu poate fi pustie!")
     @Column(name = "Masa_kg_moment")
-    private short masaKgMoment;
+    private int masaKgMoment;
 
     @NotNull(message = "Coloana nu poate fi pustie!")
-    @Column(name = "Starea_sanatii")
-    private String stareaSanatatii;
+    @Column(name = "Statutul")
+    private String statutul;
 
     @NotNull(message = "Coloana nu poate fi pustie!")
     @Column(name = "Forma_achizitie")
@@ -54,6 +55,13 @@ public class VacaModel {
     @NotNull(message = "Coloana nu poate fi pustie!")
     @Column(name = "Categorie")
     private String categorie;
+
+    @NotNull(message = "Coloana nu poate fi pustie!")
+    @Column(name = "Starea_sanatatii")
+    private String stareaSanatatii;
+
+    @OneToMany(mappedBy = "vacaModel", cascade = CascadeType.ALL)
+    private List<GrupuriVaciModel> grupuriVaciModels;
 
 
 

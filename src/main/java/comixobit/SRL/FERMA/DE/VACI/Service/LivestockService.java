@@ -34,4 +34,6 @@ public class LivestockService {
     public ProduseZootehniceModel findByName(Integer id){
         return livestockProduceRepository.getOne(id);
     }
+
+
 }

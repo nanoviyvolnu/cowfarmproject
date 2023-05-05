@@ -1,13 +1,22 @@
 package comixobit.SRL.FERMA.DE.VACI.Controller;
 
+import com.lowagie.text.DocumentException;
 import comixobit.SRL.FERMA.DE.VACI.Models.FurajeModel;
+import comixobit.SRL.FERMA.DE.VACI.Models.VacaModel;
 import comixobit.SRL.FERMA.DE.VACI.Repository.FeedsRepository;
 import comixobit.SRL.FERMA.DE.VACI.Service.FeedsService;
+import comixobit.SRL.FERMA.DE.VACI.Utils.ExportCowsByPdf;
+import comixobit.SRL.FERMA.DE.VACI.Utils.ExportFeedsByPdf;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -66,9 +75,21 @@ public class FeedsController {
                                  Model model) {
         if (bindingResult.hasErrors()) {
             return "employee/updateEmployee";
-        } else {
+        }
             feedsService.saveFeeds(furajeModel);
             return "redirect:/adminPanel/listaFuraje";
-        }
+    }
+
+    @GetMapping("/listaFuraje/export-to-pdf")
+    public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=furaje_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        List<FurajeModel> furajeModelList = feedsService.selectAllFeeds();
+        ExportFeedsByPdf exporter = new ExportFeedsByPdf(furajeModelList);
+        exporter.export(response);
     }
 }

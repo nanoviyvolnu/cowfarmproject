@@ -3,48 +3,234 @@
 <meta charset="UTF-8">
 <title>Editeaza furaje</title>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap');
+
     *{
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
-    }
-    body {
-        background-color:white;
-    }
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #38444d;
+        list-style: none;
+        text-decoration: none;
+        font-family: 'Josefin Sans', sans-serif;
     }
 
-    li {
+    body{
+        background-color: #f3f5f9;
+    }
+
+    .wrapper{
+        display: flex;
+        position: relative;
+    }
+
+    .wrapper .sidebar{
+        width: 200px;
+        height: 100%;
+        background: #4b4276;
+        padding: 30px 0px;
+        position: fixed;
+    }
+
+    .wrapper .sidebar h2{
+        color: #fff;
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .wrapper .sidebar ul li{
+        padding: 15px;
+        border-bottom: 1px solid #bdb8d7;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .wrapper .sidebar ul li a{
+        color: #bdb8d7;
+        display: block;
+    }
+
+    .wrapper .sidebar ul li a .fas{
+        width: 25px;
+    }
+
+    .wrapper .sidebar ul li:hover{
+        background-color: #594f8d;
+    }
+
+    .wrapper .sidebar ul li:hover a{
+        color: #fff;
+    }
+
+    .wrapper .sidebar .social_media{
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+    }
+
+    .wrapper .sidebar .social_media a{
+        display: block;
+        width: 40px;
+        background: #594f8d;
+        height: 40px;
+        line-height: 45px;
+        text-align: center;
+        margin: 0 5px;
+        color: #bdb8d7;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .wrapper .main_content{
+        width: 100%;
+        margin-left: 200px;
+    }
+
+    .wrapper .main_content .header{
+        padding: 20px;
+        background: #fff;
+        color: #717171;
+        border-bottom: 1px solid #e0e4e8;
+    }
+
+    .wrapper .main_content .info{
+        margin: 20px;
+        color: #717171;
+        line-height: 25px;
+    }
+
+    .wrapper .main_content .info div{
+        margin-bottom: 20px;
+    }
+
+    .content-table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        min-width: 400px;
+        border-radius: 5px 5px 0 0;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .content-table thead tr {
+        background-color: #C19A6B	;
+        color: #ffffff;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .content-table th,
+    .content-table td {
+        padding: 5px 10px;
+    }
+
+    .content-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .content-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    .content-table tbody tr:last-of-type {
+        border-bottom: 2px solid #C19A6B;
+    }
+
+    .content-table tbody tr.active-row {
+        font-weight: bold;
+        color: #C19A6B;
+    }
+
+    a, a:hover, a:focus, a:active {
+        text-decoration: none;
+        color: inherit;
+    }
+    form {
+        width: 600px;
+        box-sizing: border-box;
+        padding: 2rem;
+        border-radius: 1rem;
+        background-color: hsl(0, 0%, 100%);
+        border: 4px solid hsl(0, 0%, 90%);
+
+    }
+
+    div.form-group {
+        margin-bottom: 1rem;
+    ;
+    }
+
+    .btn {
+        border: none;
+        color: white;
+        padding: 10px 15px;
+        cursor: pointer;
+        text-decoration: none
+    }
+
+    label {
+        padding: 12px 12px 12px 0;
+        display: inline-block;
+    }
+
+    .success {background-color: #04AA6D;}
+    .success:hover {background-color: #46a049;}
+
+    .back {background-color: #f44336;}
+    .back:hover {background: #da190b;}
+
+    .col-25 {
+        font-size: 15px;
         float: left;
+        width: 50%;
+        margin-top: 6px;
+    }
+
+    .col-75 {
+        float: left;
+        width: 50%;
+        margin-top: 6px;
+    }
+
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    input[type=text], select, textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+    }
+
+    input[type=date] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
     }
 
     li a, .dropbtn {
         display: inline-block;
         color: white;
         text-align: center;
-        padding: 14px 16px;
         text-decoration: none;
     }
 
     li a:hover, .dropdown:hover .dropbtn {
-        background-color: red;
-    }
-
-    li.dropdown {
-        display: inline-block;
     }
 
     .dropdown-content {
         display: none;
-        position: absolute;
-        background-color: #f9f9f9;
+        position: page;
+        background-color: #594f8d;
         min-width: 160px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 1;
@@ -55,76 +241,112 @@
         padding: 12px 16px;
         text-decoration: none;
         display: block;
-        text-align: left;
     }
 
-    .dropdown-content a:hover {background-color: #f1f1f1;}
+    .dropdown-content a:hover {background-color: #9370DB;}
 
     .dropdown:hover .dropdown-content {
-        display: block;
-    }
-
-    .active {
-        background-color: #04AA6D;
+        display: grid;
     }
 
 </style>
 </head>
 <body>
-<ul>
-    <li class="dropdown">
-        <a href="javascript:void(0)" class="dropbtn">VACI</a>
-        <div class="dropdown-content">
-            <a href="/adminPanel/listaVaci">Lista vacilor</a>
-            <a href="/adminPanel/adaugaVaca">Creaza o vaca noua</a>
+<div class="wrapper">
+    <div class="sidebar">
+        <h2>Welcome!</h2>
+        <ul>
+            <li><a href="/adminPanel">Dashbord</a></li>
+            <li><a href="/adminPanel/listaVaci">Cows</a></li>
+            <li><a href="/adminPanel/listaAngajati">Employers</a></li>
+            <li><a href="/adminPanel/listaProduseZootehnice">Livestock Produce</a></li>
+            <li><a href="/adminPanel/listaFuraje">Feeds</a></li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Farm menu</a>
+                <div class="dropdown-content">
+                    <br>
+                    <a href="/adminPanel/farmMenu/users">Administration</a>
+                    <a href="/adminPanel/farmMenu/clienti">Clients</a>
+                    <a href="/adminPanel/farmMenu/cheltuieliFuraje">Feed expenses</a>
+                    <a href="/adminPanel/farmMenu/vanzari">Sales</a>
+                </div>
+            </li>
+            <li><a href="/logout" method="POST">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                Logout
+            </a></li>
+        </ul>
+    </div>
+    <div class="main_content">
+        <div class="header">
+            <h2>
+                Editează datele despre furaje
+            </h2>
         </div>
-    </li>
-    <li class="dropdown">
-        <a href="javascript:void(0)" class="dropbtn">ANGAJATI</a>
-        <div class="dropdown-content">
-            <a href="/adminPanel/listaAngajati">Lista angajatilor</a>
-            <a href="/adminPanel/adaugaAngajat">Adauga un angajat nou</a>
+        <div class="info" align="center">
+            <center>
+            <form action="#" th:action="@{/adminPanel/listaFuraje/editeazaFuraje/save}" th:object="${furajeModel}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                <div class="row">
+                    <input type="hidden" th:field="*{idLot}" id="id" placeholder="ID">
+                    <div class="col-25">
+                        <label for="typeFeed">Tipul furaj</label>
+                    </div>
+                    <div class="col-75">
+                        <input type="text" th:field="*{tipulFuraj}" id="typeFeed" placeholder="Tipul furaj">
+                    </div>
+                </div>
+                </div>
+        <div class="form-group">
+                <div class="row">
+                    <div class="col-25">
+                        <label for="quantityReceived">Cantitatea primita</label>
+                    </div>
+                    <div class="col-75">
+                        <input type="text" th:field="*{cantitateaPrimita}" id="quantityReceived" placeholder="Cantitatea primita">
+                    </div>
+                </div>
+            </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-25">
+                    <label for="quality">Calitatea</label>
+                </div>
+                <div class="col-75">
+                    <input type="text" th:field="*{calitatea}" id="quality" placeholder="Calitatea">
+                </div>
+            </div>
         </div>
-    </li>
-    <li class="dropdown">
-        <a href="javascript:void(0)" class="dropbtn">FURAJE</a>
-        <div class="dropdown-content">
-            <a href="/adminPanel/listaFuraje">Lista furaje</a>
-            <a href="/adminPanel/adaugaFuraje">Adauga furaje noi</a>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-25">
+                    <label for="costPerUnit">Costul pe unitate</label>
+                </div>
+                <div class="col-75">
+                    <input type="text" th:field="*{costulPerUnitate}" id="costPerUnit" placeholder="Costul pe unitate">
+                </div>
+            </div>
         </div>
-    </li>
-    <li class="dropdown">
-        <a href="javascript:void(0)" class="dropbtn">PRODUSE ZOOTEHNICE</a>
-        <div class="dropdown-content">
-            <a href="/adminPanel/listaProduseZootehnice">Lista produse zootehnice</a>
-            <a href="/adminPanel/adaugaProduseZootehnice">Adauga produse zootehnice noi</a>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="boughtDate">Data procurarii</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="date"  th:field="*{dataProcurarii}" id="boughtDate" placeholder="yyyy-MM-dd">
+                        </div>
+                    </div>
+                </div>
+        <button class="btn back">
+            <a href="/adminPanel/listaFuraje ">Lista furaje</a>
+        </button>
+        <button class="btn success" type="submit">
+            Editează
+        </button>
+            </form>
+            </center>
         </div>
-    </li>
-    <li style="float:right"><a class="active" href="/logout">LOGOUT</a></li>
-</ul>
-<h2 align="center">Editeaza datele despre angajat</h2>
-<form action="#" th:action="@{/adminPanel/listaFuraje/editeazaFuraje/save}" th:object="${furajeModel}" method="post" enctype="multipart/form-data">
-    <label for="id">ID</label>
-    <br>
-    <input readonly type="number" th:field="*{idLot}" id="id" placeholder="ID">
-    <br/>
-    <label for="typeFeed">Tipul furaj</label>
-    <br>
-    <input type="text" th:field="*{tipulFuraj}" id="typeFeed" placeholder="Tipul furaj">
-    <br>
-    <label for="quantityReceived">Cantitatea primita</label>
-    <br>
-    <input type="text" th:field="*{cantitateaPrimita}" id="quantityReceived" placeholder="Cantitatea primita">
-    <br>
-    <label for="quality">Calitatea</label>
-    <br>
-    <input type="text" th:field="*{calitatea}" id="quality" placeholder="Calitatea">
-    <br>
-    <label for="costPerUnit">Costul pe unitate</label>
-    <br>
-    <input type="text" th:field="*{costulPerUnitate}" id="costPerUnit" placeholder="Costul pe unitate">
-    <br>
-    <input type="submit" value="Editeaza furaj">
-</form>
+    </div>
+</div>
 </body>
 </html>

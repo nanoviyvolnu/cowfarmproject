@@ -1,16 +1,22 @@
 package comixobit.SRL.FERMA.DE.VACI.Controller;
 
+import com.lowagie.text.DocumentException;
 import comixobit.SRL.FERMA.DE.VACI.Models.ProduseZootehniceModel;
+import comixobit.SRL.FERMA.DE.VACI.Models.VacaModel;
 import comixobit.SRL.FERMA.DE.VACI.Repository.LivestockProduceRepository;
 import comixobit.SRL.FERMA.DE.VACI.Service.LivestockService;
+import comixobit.SRL.FERMA.DE.VACI.Utils.ExportCowsByPdf;
+import comixobit.SRL.FERMA.DE.VACI.Utils.ExportLiveStockByPdf;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -39,14 +45,12 @@ public class LivestockProduceController {
 
     @PostMapping("/adaugaProduseZootehnice/save")
     public String insertIntoLivestockProduce(ProduseZootehniceModel produseZootehniceModel,
-                                     BindingResult bindingResult,
-                                     Model model) {
+                                             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "liveStockProduce/createLivestockProduce";
-        } else {
+        }
             livestockService.saveProduceZoo(produseZootehniceModel);
             return "redirect:/adminPanel/listaProduseZootehnice";
-        }
     }
 
 
@@ -69,9 +73,21 @@ public class LivestockProduceController {
                                  Model model) {
         if (bindingResult.hasErrors()) {
             return "liveStockProduce/updateLivestockProduce";
-        } else {
+        }
             livestockService.saveProduceZoo(produseZootehniceModel);
             return "redirect:/adminPanel/listaProduseZootehnice";
-        }
+    }
+
+    @GetMapping("/listaProduseZootehnice/export-to-pdf")
+    public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=produse_zootehnice_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        List<ProduseZootehniceModel> produseZootehniceModelList = livestockService.selectAllProduceZoo();
+        ExportLiveStockByPdf exporter = new ExportLiveStockByPdf(produseZootehniceModelList);
+        exporter.export(response);
     }
 }

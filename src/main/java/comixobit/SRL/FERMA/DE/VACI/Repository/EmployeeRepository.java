@@ -14,4 +14,7 @@ import java.util.Optional;
 @EnableJpaRepositories
 public interface EmployeeRepository extends JpaRepository<LucratorModel, Integer> {
     boolean existsByIdnp(String idnp);
+
+    @Query(value = "SELECT remunerare_pe_ora, COUNT(*) FROM lucrator GROUP BY remunerare_pe_ora", nativeQuery = true)
+    List<Object> getCountByRemunerarePeOra();
 }

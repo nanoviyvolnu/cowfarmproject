@@ -1,10 +1,14 @@
 package comixobit.SRL.FERMA.DE.VACI.Controller;
 
+import com.lowagie.text.DocumentException;
 import comixobit.SRL.FERMA.DE.VACI.Models.LucratorModel;
 import comixobit.SRL.FERMA.DE.VACI.Repository.EmployeeRepository;
+import comixobit.SRL.FERMA.DE.VACI.Utils.ExportCowsByPdf;
+import comixobit.SRL.FERMA.DE.VACI.Utils.ExportEmployersByPdf;
 import comixobit.SRL.FERMA.DE.VACI.Utils.FIleUploadUtil;
 import comixobit.SRL.FERMA.DE.VACI.Service.EmployeeService;
 import comixobit.SRL.FERMA.DE.VACI.Utils.ValidatorUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -15,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -62,11 +69,12 @@ public class EmployeeController {
                 String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
                 lucratorModel.setPhoto(fileName);
 
+                employeeService.saveEmployee(lucratorModel);
+
                 String uploadDir = "images/employers/" + lucratorModel.getIdLucrator();
 
                 FIleUploadUtil.saveFile(uploadDir, fileName, multipartFile);
             }
-            employeeService.saveEmployee(lucratorModel);
 
             return "redirect:/adminPanel/listaAngajati";
         }
@@ -98,13 +106,26 @@ public class EmployeeController {
                 String fileName = StringUtils.cleanPath(multipartFile1.getOriginalFilename());
                 lucratorModel.setPhoto(fileName);
 
-                employeeService.saveEmployee(lucratorModel);
-
                 String uploadDir = "images/employers/" + lucratorModel.getIdLucrator();
 
                 FIleUploadUtil.saveFile(uploadDir, fileName, multipartFile1);
             }
+
+            employeeService.updateEmployee(lucratorModel);
             return "redirect:/adminPanel/listaAngajati";
         }
+    }
+
+    @GetMapping("/listaAngajati/export-to-pdf")
+    public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=angajati_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        List<LucratorModel> lucratorModelList = employeeService.selectAllEmployee();
+        ExportEmployersByPdf exporter = new ExportEmployersByPdf(lucratorModelList);
+        exporter.export(response);
     }
 }

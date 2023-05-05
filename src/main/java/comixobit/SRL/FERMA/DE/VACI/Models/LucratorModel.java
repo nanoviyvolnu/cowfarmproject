@@ -52,6 +52,12 @@ public class LucratorModel {
     @Column(name = "Data_angajarii")
     private Date dataAngajarii;
 
+    @Column(name = "salariu")
+    private int salariu;
+
+    @Column(name = "status")
+    private String status;
+
     public LucratorModel() {
 
     }

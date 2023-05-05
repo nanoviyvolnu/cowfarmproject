@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -37,16 +36,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SpringSecurityDialect springSecurityDialect() {
-        return new SpringSecurityDialect();
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/adminPanel", "/adminPanel/**").hasRole("ADMIN")
-                        .requestMatchers("/auth/login", "/auth/register", "/index", "/error")
+                        .requestMatchers("/index/users", "/grupuri", "/listaGrupuri", "/adaugaGrup").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/auth/login", "/auth/register", "/index")
                         .permitAll()
                         .anyRequest()
                         .hasAnyRole("USER", "ADMIN"))

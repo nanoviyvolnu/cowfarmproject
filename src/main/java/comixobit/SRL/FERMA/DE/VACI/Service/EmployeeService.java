@@ -23,6 +23,15 @@ public class EmployeeService {
     }
 
     public LucratorModel saveEmployee(LucratorModel lucratorModel){
+        int totalSalary = lucratorModel.getRemunerarePeOra() * lucratorModel.getNormaDeMunca();
+        lucratorModel.setSalariu(totalSalary);
+        lucratorModel.setStatus("ACTIV");
+        return  employeeRepository.save(lucratorModel);
+    }
+
+    public LucratorModel updateEmployee(LucratorModel lucratorModel){
+        int totalSalary = lucratorModel.getRemunerarePeOra() * lucratorModel.getNormaDeMunca();
+        lucratorModel.setSalariu(totalSalary);
         return  employeeRepository.save(lucratorModel);
     }
 
@@ -38,5 +47,8 @@ public class EmployeeService {
         return employeeRepository.existsByIdnp(idnp);
     }
 
+    public int selectCountEmployers(){
+        return (int) employeeRepository.count();
+    }
 
 }

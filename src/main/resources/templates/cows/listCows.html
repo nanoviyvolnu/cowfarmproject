@@ -4,48 +4,189 @@
     <meta charset="UTF-8">
     <title>Lista vacilor</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap');
+
         *{
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        body {
-            background-color:white;
-        }
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #38444d;
+            list-style: none;
+            text-decoration: none;
+            font-family: 'Josefin Sans', sans-serif;
         }
 
-        li {
-            float: left;
+        body{
+            background-color: #f3f5f9;
         }
+
+        .wrapper{
+            display: flex;
+            position: relative;
+        }
+
+        .wrapper .sidebar{
+            width: 200px;
+            height: 100%;
+            background: #4b4276;
+            padding: 30px 0px;
+            position: fixed;
+        }
+
+        .wrapper .sidebar h2{
+            color: #fff;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .wrapper .sidebar ul li{
+            padding: 15px;
+            border-bottom: 1px solid #bdb8d7;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .wrapper .sidebar ul li a{
+            color: #bdb8d7;
+            display: block;
+        }
+
+        .wrapper .sidebar ul li a .fas{
+            width: 25px;
+        }
+
+        .wrapper .sidebar ul li:hover{
+            background-color: #594f8d;
+        }
+
+        .wrapper .sidebar ul li:hover a{
+            color: #fff;
+        }
+
+        .wrapper .sidebar .social_media{
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+        }
+
+        .wrapper .sidebar .social_media a{
+            display: block;
+            width: 40px;
+            background: #594f8d;
+            height: 40px;
+            line-height: 45px;
+            text-align: center;
+            margin: 0 5px;
+            color: #bdb8d7;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .wrapper .main_content{
+            width: 100%;
+            margin-left: 200px;
+        }
+
+        .wrapper .main_content .header{
+            padding: 20px;
+            background: #fff;
+            color: #717171;
+            border-bottom: 1px solid #e0e4e8;
+        }
+
+        .wrapper .main_content .info{
+            margin: 20px;
+            color: #717171;
+            line-height: 25px;
+        }
+
+        .wrapper .main_content .info div{
+            margin-bottom: 20px;
+        }
+
+        .content-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            min-width: 400px;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .content-table thead tr {
+            background-color: #9370DB	;
+            color: #ffffff;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .content-table th,
+        .content-table td {
+            padding: 5px 10px;
+        }
+
+        .content-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .content-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .content-table tbody tr:last-of-type {
+            border-bottom: 2px solid #9370DB;
+        }
+
+        .content-table tbody tr.active-row {
+            font-weight: bold;
+            color: #9370DB;
+        }
+
+        a, a:hover, a:focus, a:active {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .btn {
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            cursor: pointer;
+            text-decoration: none
+        }
+
+        .success {background-color: #04AA6D;}
+        .success:hover {background-color: #46a049;}
+
+        .delete {background-color: #f44336;}
+        .delete:hover {background: #da190b;}
+
+        .edit {background-color: #2196F3;}
+        .edit:hover {background: #0b7dda;}
+
+        .export {background-color: #ff9800;}
+        .export:hover {background: #e68a00;}
+
+        .find {background-color: #D8BFD8;}
+        .find:hover {background: #D8BFD8;}
 
         li a, .dropbtn {
             display: inline-block;
             color: white;
             text-align: center;
-            padding: 14px 16px;
             text-decoration: none;
         }
 
         li a:hover, .dropdown:hover .dropbtn {
-            background-color: red;
-        }
-
-        li.dropdown {
-            display: inline-block;
         }
 
         .dropdown-content {
             display: none;
-            position: absolute;
-            background-color: #f9f9f9;
+            position: page;
+            background-color: #594f8d;
             min-width: 160px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             z-index: 1;
@@ -56,109 +197,113 @@
             padding: 12px 16px;
             text-decoration: none;
             display: block;
-            text-align: left;
         }
 
-        .dropdown-content a:hover {background-color: #f1f1f1;}
+        .dropdown-content a:hover {background-color: #9370DB;}
 
         .dropdown:hover .dropdown-content {
-            display: block;
-        }
-        .active {
-            background-color: #04AA6D;
+            display: grid;
         }
 
-        #cows {
-            font-family: Arial, Helvetica, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        #cows td, #employers th {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-
-        #cows tr:nth-child(even){background-color: #f2f2f2;}
-
-        #cows tr:hover {background-color: #ddd;}
-
-        #cows th {
-            padding-top: 12px;
-            padding-bottom: 12px;
-            text-align: left;
-            background-color: #04AA6D;
-            color: white;
+        input[type=text], textarea {
+            width: 150px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
         }
     </style>
 </head>
 <body>
-<ul>
-    <li class="dropdown">
-        <a href="javascript:void(0)" class="dropbtn">VACI</a>
-        <div class="dropdown-content">
-            <a href="/adminPanel/listaVaci">Lista vacilor</a>
-            <a href="/adminPanel/adaugaVaca">Creaza o vaca noua</a>
+<div class="wrapper">
+    <div class="sidebar">
+        <h2>Welcome!</h2>
+        <ul>
+            <li><a href="/adminPanel">Dashbord</a></li>
+            <li><a href="/adminPanel/listaVaci">Cows</a></li>
+            <li><a href="/adminPanel/listaAngajati">Employers</a></li>
+            <li><a href="/adminPanel/listaProduseZootehnice">Livestock Produce</a></li>
+            <li><a href="/adminPanel/listaFuraje">Feeds</a></li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Farm menu</a>
+                <div class="dropdown-content">
+                    <br>
+                    <a href="/adminPanel/farmMenu/users">Administration</a>
+                    <a href="/adminPanel/farmMenu/clienti">Clients</a>
+                    <a href="/adminPanel/farmMenu/cheltuieliFuraje">Feed expenses</a>
+                    <a href="/adminPanel/farmMenu/vanzari">Sales</a>
+                </div>
+            </li>
+            <li><a href="/logout" method="POST">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                Logout
+            </a></li>
+        </ul>
+    </div>
+    <div class="main_content">
+        <div class="header">
+            <h2>
+                Lista văcilor
+            </h2>
         </div>
-    </li>
-    <li class="dropdown">
-        <a href="javascript:void(0)" class="dropbtn">ANGAJATI</a>
-        <div class="dropdown-content">
-            <a href="/adminPanel/listaAngajati">Lista angajatilor</a>
-            <a href="/adminPanel/adaugaAngajat">Adauga un angajat nou</a>
-        </div>
-    </li>
-    <li class="dropdown">
-        <a href="javascript:void(0)" class="dropbtn">FURAJE</a>
-        <div class="dropdown-content">
-            <a href="/adminPanel/listaFuraje">Lista furaje</a>
-            <a href="/adminPanel/adaugaFuraje">Adauga furaje noi</a>
-        </div>
-    </li>
-    <li class="dropdown">
-        <a href="javascript:void(0)" class="dropbtn">PRODUSE ZOOTEHNICE</a>
-        <div class="dropdown-content">
-            <a href="/adminPanel/listaProduseZootehnice">Lista produse zootehnice</a>
-            <a href="/adminPanel/adaugaProduseZootehnice">Adauga produse zootehnice noi</a>
-        </div>
-    </li>
-    <li style="float:right"><a class="active" href="/logout">LOGOUT</a></li>
-</ul>
-<h2>Lista vacilor</h2>
-<form style="justify-content:center; display: flex;">
-    <div th:switch="${listaVaci}">
-            <table id="cows">
+        <div class="info">
+            <button class="btn success">
+                <a href="/adminPanel/adaugaVaca">Adauga vaci</a>
+            </button>
+            <button class="btn export">
+                <a href="/adminPanel/listaVaci/export-to-pdf">Export pdf</a>
+            </button>
+            <br>
+            <form th:action="@{/adminPanel/listaVaci}">
+            <h4>Cauta animalul dupa rasă: </h4>
+            <input type="text" name="rasa">
+            <button class="btn find" type="submit">
+                Search
+            </button>
+            </form>
+            <center>
+            <table class="content-table">
                 <thead>
                 <tr>
                     <th>Poza</th>
                     <th>Rasa</th>
-                    <th>Masa kilograme initiala</th>
-                    <th>Masa kilograme la moment</th>
+                    <th>Masa initiala</th>
+                    <th>Masa la moment</th>
                     <th>Starea sanatatii</th>
+                    <th>Statutul</th>
                     <th>Forma de achizitie</th>
                     <th>Data luarii evidente</th>
+                    <th>Genul</th>
+                    <th>Categorie</th>
+                    <th align="center">Manage</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="vacaModel : ${vacaModelList}">
-                    <td><img th:src="${vacaModel.getPhotosImagePathCow}" width="270" height="250"/></td>
+                    <td><img th:src="${vacaModel.getPhotosImagePathCow}" width="50" height="50"/></td>
                     <td th:text="${vacaModel.rasa}"></td>
-                    <td th:text="${vacaModel.masaKgInitiala}"></td>
-                    <td th:text="${vacaModel.masaKgMoment}"></td>
+                    <td th:text="(${vacaModel.masaKgInitiala} + KG)"></td>
+                    <td th:text="(${vacaModel.masaKgMoment} + KG)"></td>
                     <td th:text="${vacaModel.stareaSanatatii}"></td>
+                    <td th:text="${vacaModel.statutul}"></td>
                     <td th:text="${vacaModel.formaAchizitie}"></td>
                     <td th:text="${vacaModel.dataLuariiEvidenta}"></td>
                     <td th:text="${vacaModel.genul}"></td>
                     <td th:text="${vacaModel.categorie}"></td>
-                    <td><a th:href="@{editeazaVaca/{idVaca}(idVaca=${vacaModel.idVaca})}">Editeaza</a></td>
-                    <td><a th:href="@{stergeVaca/{idVaca}(idVaca=${vacaModel.idVaca})}">Sterge</a></td>
+                    <td>
+                        <button class="btn delete">
+                            <a th:href="@{stergeVaca/{idVaca}(idVaca=${vacaModel.idVaca})}">Sterge</a>
+                        </button>
+                        <button class="btn edit">
+                            <a th:href="@{editeazaVaca/{idVaca}(idVaca=${vacaModel.idVaca})}">Editeaza</a>
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
-        </div>
-    <br>
-    <br>
-</form>
-<p align="center"><a href="/adminPanel/adaugaVaca">Adauga vaci</a></p>
+            </center>
+    </div>
+</div>
+</div>
 </body>
 </html>

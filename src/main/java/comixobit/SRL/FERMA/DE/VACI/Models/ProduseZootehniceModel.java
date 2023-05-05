@@ -11,7 +11,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-@AllArgsConstructor
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -40,7 +41,9 @@ public class ProduseZootehniceModel {
     @Column(name = "Tip_produs")
     private String tipProdus;
 
-    public ProduseZootehniceModel() {
+    @NotNull(message = "Coloana nu poate fi pustie!")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "Data_expirarii")
+    private Date dataExpirarii;
 
-    }
 }

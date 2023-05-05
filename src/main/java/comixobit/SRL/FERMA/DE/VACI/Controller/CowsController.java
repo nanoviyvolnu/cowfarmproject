@@ -1,12 +1,15 @@
 package comixobit.SRL.FERMA.DE.VACI.Controller;
 
+import com.lowagie.text.DocumentException;
 import comixobit.SRL.FERMA.DE.VACI.Models.UserModel;
 import comixobit.SRL.FERMA.DE.VACI.Models.VacaModel;
 import comixobit.SRL.FERMA.DE.VACI.Repository.EmployeeRepository;
 import comixobit.SRL.FERMA.DE.VACI.Repository.CowRepository;
+import comixobit.SRL.FERMA.DE.VACI.Utils.ExportCowsByPdf;
 import comixobit.SRL.FERMA.DE.VACI.Utils.FIleUploadUtil;
 import comixobit.SRL.FERMA.DE.VACI.Service.EmployeeService;
 import comixobit.SRL.FERMA.DE.VACI.Service.CowService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -16,8 +19,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @org.springframework.stereotype.Controller
 @RequestMapping("/adminPanel")
@@ -32,9 +39,15 @@ public class CowsController {
 
 
     @GetMapping("/listaVaci")
-    public String allCows(Model model) {
-        List<VacaModel> vacaModelList = cowService.selectAllCows();
+    public String allCows(Model model,
+                          @RequestParam(value = "rasa", required = false) String rasa) {
+        if(rasa == null) {
+            List<VacaModel> vacaModelList = cowService.selectAllCows();
+            model.addAttribute("vacaModelList", vacaModelList);
+        }else{
+        List<VacaModel> vacaModelList = cowService.findByRasaCow(rasa);
         model.addAttribute("vacaModelList", vacaModelList);
+        }
         return "cows/listCows";
     }
 
@@ -89,12 +102,26 @@ public class CowsController {
         } else if (multipartFile1 != null && !multipartFile1.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile1.getOriginalFilename());
             vacaModel.setPhoto(fileName);
-            VacaModel savedVaca = cowService.saveCow(vacaModel);
 
             String uploadDir = "images/cows/" + vacaModel.getIdVaca();
 
             FIleUploadUtil.saveFile(uploadDir, fileName, multipartFile1);
         }
+        cowService.saveCow(vacaModel);
         return "redirect:/adminPanel/listaVaci";
     }
+    @GetMapping("/listaVaci/export-to-pdf")
+    public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=vaci_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        List<VacaModel> vacaModelList = cowService.selectAllCows();
+        ExportCowsByPdf exporter = new ExportCowsByPdf(vacaModelList);
+        exporter.export(response);
+    }
+
+
 }

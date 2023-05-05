@@ -28,7 +28,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         for (GrantedAuthority grantedAuthority : authorities) {
             System.out.println(grantedAuthority.getAuthority());
             if (grantedAuthority.getAuthority().equals("ROLE_USER")) {
-                redirectUrl = "/index";
+                redirectUrl = "/index/users";
                 break;
             } else if (grantedAuthority.getAuthority().equals("ROLE_ADMIN")) {
                 redirectUrl = "/adminPanel";
