@@ -1,10 +1,212 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" th:href="@{/css/style.css}" href="/static/css/style.css" type="text/css" />
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Lista task-urilor</title>
 </head>
 <body>
-$END$
+<div class="wrapper">
+  <div class="sidebar">
+    <h2>Welcome!</h2>
+    <ul>
+      <li><a href="/adminPanel">Dashbord</a></li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Cows</a>
+        <div class="dropdown-content">
+          <br>
+          <a th:href="@{/adminPanel/listaVaci/pagina/1}">Cows</a>
+          <a th:href="@{/adminPanel/vacileInsarcinate/pagina/1}">Pregnat cows</a>
+          <a th:href="@{/adminPanel/vacileMoarte/pagina/1}">Died cows</a>
+          <a th:href="@{/adminPanel/vacileBolnave/pagina/1}">Sick cows</a>
+        </div>
+      </li>
+      <li><a href="/adminPanel/listaAngajati/pagina/1">Employers</a></li>
+      <li><a href="/adminPanel/listaProduseZootehnice/pagina/1">Livestock Produce</a></li>
+      <li><a href="/adminPanel/listaFuraje/pagina/1">Feeds</a></li>
+      <li><a href="/adminPanel/listaInventar/pagina/1">Inventory</a></li>
+      <li><a href="/adminPanel/tasks/pagina/1">Task-uri</a></li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Mini ERP</a>
+        <div class="dropdown-content">
+          <br>
+          <a href="/adminPanel/farmMenu/users">Administration</a>
+          <a href="/adminPanel/farmMenu/clienti">Clients</a>
+          <a href="/adminPanel/farmMenu/cheltuieliFuraje">Feed expenses</a>
+          <a href="/adminPanel/farmMenu/vanzari/pagina/1">Sales</a>
+        </div>
+      </li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Group cows</a>
+        <div class="dropdown-content">
+          <br>
+          <a href="/listaGrupuri">Groups</a>
+          <a href="/adaugaGrup">Create new group</a>
+        </div>
+      </li>
+      <li>
+        <a href="/logout" method="POST">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="main_content">
+    <div class="header">
+      <h4>
+        Lista task-urilor
+      </h4>
+    </div>
+    <div class="info">
+      <center>
+
+        <form style="width: auto; height: 100px" method="GET">
+          <div id="outer">
+            <div class="inner">
+              <button class="btn success">
+                <a href="/adminPanel/tasks/adaugaTask">Adauga task</a>
+              </button>
+            </div>
+          </div>
+        </form>
+
+
+        <form style="width: auto; height: auto">
+          <div align="left">
+            <ul>
+              <li style="display: inline-block; margin: 0px 10px;">
+                <a href="/adminPanel/tasks/pagina/1" class="nav-link" style="color: cornflowerblue;">
+                  Toate task-urile
+                </a>
+              </li>
+              <li style="display: inline-block; margin: 0px 10px;">
+                <a href="/adminPanel/tasks/inProgress/pagina/1" style="color: cornflowerblue;">
+                  In proces
+                </a>
+              </li>
+              <li style="display: inline-block; margin: 0px 10px;">
+                <a href="/adminPanel/tasks/done/pagina/1" style="color: cornflowerblue;">
+                  Finisate
+                </a>
+              </li>
+            </ul>
+          </div>
+          <table class="content-table">
+            <thead>
+            <tr>
+              <th>Denumire</th>
+              <th>Creat</th>
+              <th>Termen limita</th>
+              <th>Atribuit</th>
+              <th style="width: 75px;">Status</th>
+              <th style="text-align: center">Manage</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="taskModelList : ${taskModelList}">
+              <td th:text="${taskModelList.denumire}"></td>
+              <td th:text="${taskModelList.dataCreare}"></td>
+              <td th:text="${taskModelList.dataLimita}"></td>
+              <td th:text="(${taskModelList.lucratorModel.nume} + ${taskModelList.lucratorModel.prenume})"></td>
+              <td style="width: 75px;">
+                <div class="progress" data-height="150" data-toggle="tooltip" title="" data-original-title="130%" style="height: 5px;">
+                  <div th:if="${taskModelList.statusTask == 'TO DO'}" class="progress-bar bg-red" data-width="20" style="width: 20px; height: 50px; top: 12px"></div>
+                  <div th:if="${taskModelList.statusTask == 'IN PROGRESS'}" class="progress-bar bg-yellow" data-width="70" style="width: 70px; height: 50px; top: 10px"></div>
+                  <div th:if="${taskModelList.statusTask == 'DONE'}" class="progress-bar bg-success" data-width="150" style="width: 130px; height: 50px; top: 15px"></div>
+                </div>
+              </td>
+              <td>
+                <button class="btn delete">
+                  <a th:href="@{/adminPanel/task/stergeTask/pagina/{pageNumber}/{idTask}(pageNumber=${currentPage}, idTask=${taskModelList.idTask})}">Sterge</a>
+                </button>
+
+                <button class="btn edit">
+                  <a th:href="@{/adminPanel/task/editeazaTask/pagina/{pageNumber}/{idTask}(pageNumber=${currentPage}, idTask=${taskModelList.idTask})}">Editeaza</a>
+                </button>
+
+                <button type="button" class="btn sell" data-toggle="modal"
+                        data-target="#viewTaskDialog" th:data-taskId="${taskModelList.idTask}">
+                  View
+                </button>
+
+
+                <button class="btn edit">
+                  <a th:href="@{/adminPanel/tasks/done/toInProgress/pagina/{pageNumber}/{idTask}(pageNumber=${currentPage}, idTask=${taskModelList.idTask})}">
+                    <i class="bi bi-arrow-bar-left"></i>
+                  </a>
+                </button>
+
+                <div class="modal fade" tabindex="-1" id="viewTaskDialog" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Descriere task-ului</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <h6>
+                          <label id="task-descriere" name="task-descriere"></label>
+                        </h6>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <footer style="font-size: large; display: flex" class="panel-footer">
+            Total Items [[${totalItems}]] : Page [[${currentPage}]] of [[${totalPages}]]
+            &nbsp; &nbsp; - &nbsp;
+            <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                          <a th:href="@{'/adminPanel/tasks/done/pagina/' + ${i}}">[[${i}]]</a>
+                          &nbsp; &nbsp;
+                        </span>
+          </footer>
+        </form>
+      </center>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script type="text/javascript">
+  $('#viewTaskDialog').on('shown.bs.modal', function (event) {
+    let button = $(event.relatedTarget)
+    let taskId = button.data('taskid')
+
+    if (taskId) {
+      $.get({
+        url: '/adminPanel/tasks/' + taskId,
+        success: (data) => {
+          let modal = $(this)
+          modal.find('#task-descriere').text(data.descriere)
+          console.log(data.denumire)
+        },
+        error: (err) => {
+          alert("Error : " + err);
+        }
+      });
+    }
+  })
+</script>
 </body>
 </html>

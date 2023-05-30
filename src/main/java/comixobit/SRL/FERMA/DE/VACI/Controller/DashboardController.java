@@ -6,15 +6,13 @@ import comixobit.SRL.FERMA.DE.VACI.Models.*;
 import comixobit.SRL.FERMA.DE.VACI.Repository.ClientsRepository;
 import comixobit.SRL.FERMA.DE.VACI.Repository.LivestockProduceRepository;
 import comixobit.SRL.FERMA.DE.VACI.Repository.SellsRepository;
-import comixobit.SRL.FERMA.DE.VACI.Service.ClientsService;
-import comixobit.SRL.FERMA.DE.VACI.Service.FeedsService;
+import comixobit.SRL.FERMA.DE.VACI.Service.*;
 //import comixobit.SRL.FERMA.DE.VACI.Service.SellsService;
-import comixobit.SRL.FERMA.DE.VACI.Service.SellsService;
-import comixobit.SRL.FERMA.DE.VACI.Service.UsersService;
 import comixobit.SRL.FERMA.DE.VACI.Utils.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,6 +46,12 @@ public class DashboardController {
 
     @Autowired
     private LivestockProduceRepository livestockProduceRepository;
+
+    @Autowired
+    private JurnalService jurnalService;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/farmMenu/users")
     public String allUsers(Model model){
@@ -87,45 +91,25 @@ public class DashboardController {
         exporter.export(response);
     }
 
-    @GetMapping("/farmMenu/vanzari")
-    public String allSoldLivestock(Model model, VanzariModel vanzariModel){
-        List<VanzariModel> vanzariModelList = sellsService.selectAllSoldLivestock();
-        model.addAttribute("vanzariModelList", vanzariModelList);
+    @GetMapping("/farmMenu/vanzari/pagina/1")
+    public String getAllPagesSells(Model model){
+        return getOnePageSales(model, 1);
+    }
+
+    @GetMapping("/farmMenu/vanzari/pagina/{pageNumber}")
+    public String getOnePageSales(Model model,
+                                   @PathVariable("pageNumber") int currentPage) {
+        Page<VanzariModel> page = sellsService.selectAllSoldLivestockPage(currentPage);
+        int totalPage = page.getTotalPages();
+        long totalItems = page.getTotalElements();
+        List<VanzariModel> vanzariModelList = page.getContent();
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPage);
+        model.addAttribute("totalItems", totalItems);
+        model.addAttribute("vanzariModelList", vanzariModelList).toString();
         return "dashboard/sales";
     }
 
-
-    @GetMapping("/farmMenu/vanzari/adaugaVanzari")
-    public String createSoldInsertForm(Model model,
-                                       VanzariModel vanzariModel,
-                                       String tipProdus,
-                                       String organizatia,
-                                       String dataExpirarii){
-        List<String> tipProdusSelector = sellsService.findByTipProdus(tipProdus);
-        model.addAttribute("tipProdusSelector", tipProdusSelector);
-        List<String> organizatiaSelector = sellsService.findByOrganizatia(organizatia);
-        model.addAttribute("organizatiaSelector", organizatiaSelector);
-        List<String> dataExpirariiSelector = sellsService.findByDataExpirarii(dataExpirarii);
-        model.addAttribute("dataExpirariiSelector", dataExpirariiSelector);
-        return "dashboard/createSales";
-    }
-
-    @PostMapping("/farmMenu/vanzari/adaugaVanzari/save")
-    public String saveSells(@ModelAttribute VanzariModel vanzariModel,
-                            @RequestParam("cantitate") int cantitate,
-                            @RequestParam("organizatia") String organizatia,
-                            @RequestParam("tipProdus") String tipProdus,
-                            @RequestParam("dataExpirarii") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dataExpirarii,
-                            Model model,
-                            BindingResult bindingResult)
-     throws IOException {
-
-        if (bindingResult.hasErrors()) {
-            return "dashboard/createSales";
-        }
-            sellsService.saveSoldLivestock(vanzariModel, cantitate, organizatia, tipProdus, dataExpirarii);
-            return "redirect:/adminPanel/farmMenu/vanzari";
-    }
 
     @GetMapping("/farmMenu/vanzari/stergeVanzari/{idVanzare}")
     public String deleteSells(@PathVariable("idVanzare") Integer id) {
@@ -209,4 +193,26 @@ public class DashboardController {
         ClientsExportPdf exporter = new ClientsExportPdf(clientiModelList);
         exporter.export(response);
     }
+
+    @GetMapping("/farmMenu/notifications/pagina/1")
+    public String getAllPagesNotifications(Model model){
+        return getOnePageNotification(model, 1);
+    }
+
+    @GetMapping("/farmMenu/notifications/pagina/{pageNumber}")
+    public String getOnePageNotification(Model model,
+                                         @PathVariable("pageNumber") int currentPage) {
+        Page<JurnalModel> page = jurnalService.selectAllNotifications(currentPage);
+        int totalPage = page.getTotalPages();
+        long totalItems = page.getTotalElements();
+        List<JurnalModel> jurnalModelList = page.getContent();
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPage);
+        model.addAttribute("totalItems", totalItems);
+        model.addAttribute("jurnalModelList", jurnalModelList).toString();
+        return "dashboard/jurnal";
+    }
+
+
+
     }

@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
+@Data
 @Getter
 @Setter
 @AllArgsConstructor
@@ -38,6 +39,10 @@ public class LucratorModel {
     @NotNull(message = "Coloana nu poate fi pustie!")
     @Column(name = "Photo", length = 64)
     private String photo;
+
+    @NotNull(message = "Coloana nu poate fi pustie!")
+    @Column(name = "email")
+    private String email;
 
     @NotNull(message = "Coloana nu poate fi pustie!")
     @Column(name = "Norma_de_munca")

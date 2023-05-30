@@ -37,10 +37,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-                .authorizeHttpRequests((authz) -> authz
+        return          http
+                        .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/adminPanel", "/adminPanel/**").hasRole("ADMIN")
                         .requestMatchers("/index/users", "/grupuri", "/listaGrupuri", "/adaugaGrup").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/resources/**", "/static/css/style.css").permitAll()
                         .requestMatchers("/auth/login", "/auth/register", "/index")
                         .permitAll()
                         .anyRequest()

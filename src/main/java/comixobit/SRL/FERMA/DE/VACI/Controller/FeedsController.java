@@ -2,16 +2,21 @@ package comixobit.SRL.FERMA.DE.VACI.Controller;
 
 import com.lowagie.text.DocumentException;
 import comixobit.SRL.FERMA.DE.VACI.Models.FurajeModel;
+import comixobit.SRL.FERMA.DE.VACI.Models.LucratorModel;
 import comixobit.SRL.FERMA.DE.VACI.Models.VacaModel;
 import comixobit.SRL.FERMA.DE.VACI.Repository.FeedsRepository;
 import comixobit.SRL.FERMA.DE.VACI.Service.FeedsService;
 import comixobit.SRL.FERMA.DE.VACI.Utils.ExportCowsByPdf;
 import comixobit.SRL.FERMA.DE.VACI.Utils.ExportFeedsByPdf;
+import comixobit.SRL.FERMA.DE.VACI.Utils.FIleUploadUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -31,11 +36,25 @@ public class FeedsController {
         this.feedsService = feedsService;
     }
 
-    @GetMapping("/listaFuraje")
-    public String allFeeds(Model model){
-        List<FurajeModel> furajeModelList = feedsService.selectAllFeeds();
+    @GetMapping("/listaFuraje/pagina/{pageNumber}")
+    public String getOnePage(Model model,
+                             @PathVariable("pageNumber") int currentPage){
+        Page<FurajeModel> page = feedsService.findPage(currentPage);
+        int totalPages = page.getTotalPages();
+        long totalItems = page.getTotalElements();
+        List<FurajeModel> furajeModelList = page.getContent();
+
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalItems", totalItems);
         model.addAttribute("furajeModelList", furajeModelList);
+
         return "feeds/listFeeds";
+    }
+
+    @GetMapping("/listaFuraje")
+    public String getAllPages(Model model){
+        return getOnePage(model, 1);
     }
 
     @GetMapping("/adaugaFuraje")
@@ -45,39 +64,72 @@ public class FeedsController {
 
     @PostMapping("/adaugaFuraje/save")
     public String insertIntoFeeds(FurajeModel furajeModel,
-                                     BindingResult bindingResult,
-                                     Model model) {
+                                  BindingResult bindingResult,
+                                  @RequestParam(value = "image", required = false) MultipartFile multipartFile)
+            throws IOException {
         if (bindingResult.hasErrors()) {
             return "feeds/createFeed";
-        } else {
+        }else if (multipartFile != null && !multipartFile.isEmpty()) {
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            furajeModel.setPhotoCheck(fileName);
+
             feedsService.saveFeeds(furajeModel);
-            return "redirect:/adminPanel/listaFuraje";
+
+
+            String uploadDir = "images/feedsChecks/" + furajeModel.getIdLot();
+
+            FIleUploadUtil.saveFile(uploadDir, fileName, multipartFile);
         }
+        return "redirect:/adminPanel/listaFuraje";
     }
 
 
-    @GetMapping("/stergeFuraje/{idLot}")
-    public String deleteFeeds(@PathVariable("idLot") Integer id) {
+    @GetMapping("/stergeFuraje/pagina/{pageNumber}/{idLot}")
+    public String deleteFeeds(@PathVariable("idLot") Integer id,
+                              @PathVariable("pageNumber") int currentPage,
+                              Model model) {
+        Page<FurajeModel> page = feedsService.findPage(currentPage);
+        int totalPage = page.getTotalPages();
+        long totalItems = page.getTotalElements();
+        model.addAttribute("page", page);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("totalItems", totalItems);
         feedsService.deleteById(id);
         return "redirect:/adminPanel/listaFuraje";
     }
 
-    @GetMapping("/editeazaFuraje/{idLot}")
-    public String createFeedsFormUpdate(@PathVariable("idLot") Integer id, Model model) {
+    @GetMapping("/editeazaFuraje/pagina/{pageNumber}/{idLot}")
+    public String createFeedsFormUpdate(@PathVariable("idLot") Integer id,
+                                        @PathVariable("pageNumber") int currentPage,
+                                        Model model) {
         FurajeModel furajeModel = feedsService.findById(id);
+        Page<FurajeModel> page = feedsService.findPage(currentPage);
+        int totalPage = page.getTotalPages();
+        long totalItems = page.getTotalElements();
+        model.addAttribute("page", page);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("totalItems", totalItems);
         model.addAttribute("furajeModel", furajeModel);
         return "feeds/updateFeeds";
     }
 
     @PostMapping("/listaFuraje/editeazaFuraje/save")
     public String updateFeeds(FurajeModel furajeModel,
-                                 BindingResult bindingResult,
-                                 Model model) {
+                              BindingResult bindingResult,
+                              @RequestParam(value = "image", required = false) MultipartFile multipartFile1)
+            throws IOException {
         if (bindingResult.hasErrors()) {
-            return "employee/updateEmployee";
+            return "feeds/updateFeeds";
+        }else if (multipartFile1 != null && !multipartFile1.isEmpty()) {
+            String fileName = StringUtils.cleanPath(multipartFile1.getOriginalFilename());
+            furajeModel.setPhotoCheck(fileName);
+
+            String uploadDir = "images/feedsChecks/" + furajeModel.getIdLot();
+
+            FIleUploadUtil.saveFile(uploadDir, fileName, multipartFile1);
         }
-            feedsService.saveFeeds(furajeModel);
-            return "redirect:/adminPanel/listaFuraje";
+        feedsService.saveFeeds(furajeModel);
+        return "redirect:/adminPanel/listaFuraje";
     }
 
     @GetMapping("/listaFuraje/export-to-pdf")

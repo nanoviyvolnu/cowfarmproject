@@ -13,6 +13,7 @@ import java.util.Date;
 
 @Getter
 @Setter
+@Data
 @Entity
 @Table(name = "furaje")
 public class FurajeModel {
@@ -45,4 +46,15 @@ public class FurajeModel {
     @Column(name = "data_procurarii")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dataProcurarii;
+
+    @Column(name = "poza_bon")
+    private String photoCheck;
+
+    @Transient
+    public String getPhotoCheck() {
+        if (photoCheck == null)
+            return null;
+        return "/images/feedsChecks/" + idLot + "/" + photoCheck;
+    }
+
 }

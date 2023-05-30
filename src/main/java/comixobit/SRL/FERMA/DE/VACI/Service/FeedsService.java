@@ -2,6 +2,9 @@ package comixobit.SRL.FERMA.DE.VACI.Service;
 
 import comixobit.SRL.FERMA.DE.VACI.Models.FurajeModel;
 import comixobit.SRL.FERMA.DE.VACI.Repository.FeedsRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,11 @@ public class FeedsService {
 
     public List<FurajeModel> selectAllFeeds(){
         return feedsRepository.findAll();
+    }
+
+    public Page<FurajeModel> findPage(Integer pageNumber){
+        Pageable pageable = PageRequest.of(pageNumber - 1,5);
+        return feedsRepository.findAll(pageable);
     }
 
     public FurajeModel findById(Integer id){

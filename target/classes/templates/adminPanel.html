@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.6.0/tinycolor.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/static/css/style.css" type="text/css" />
+    <meta charset="UTF-8">
+    <title>Admin panel</title>
+</head>
+<body>
+<div class="wrapper">
+    <div class="sidebar">
+        <h2>Welcome!</h2>
+        <ul>
+            <li><a href="/adminPanel">Dashbord</a></li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Cows</a>
+                <div class="dropdown-content">
+                    <br>
+                    <a th:href="@{/adminPanel/listaVaci/pagina/1}">Cows</a>
+                    <a th:href="@{/adminPanel/vacileInsarcinate/pagina/1}">Pregnat cows</a>
+                    <a th:href="@{/adminPanel/vacileMoarte/pagina/1}">Died cows</a>
+                    <a th:href="@{/adminPanel/vacileBolnave/pagina/1}">Sick cows</a>
+                </div>
+            </li>
+            <li><a href="/adminPanel/listaAngajati/pagina/1">Employers</a></li>
+            <li><a href="/adminPanel/listaProduseZootehnice/pagina/1">Livestock Produce</a></li>
+            <li><a href="/adminPanel/listaFuraje/pagina/1">Feeds</a></li>
+            <li><a href="/adminPanel/listaInventar/pagina/1">Inventory</a></li>
+            <li><a href="/adminPanel/tasks/pagina/1">Task-uri</a></li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Mini ERP</a>
+                <div class="dropdown-content">
+                    <br>
+                    <a href="/adminPanel/farmMenu/users">Administration</a>
+                    <a href="/adminPanel/farmMenu/clienti">Clients</a>
+                    <a href="/adminPanel/farmMenu/cheltuieliFuraje">Feed expenses</a>
+                    <a href="/adminPanel/farmMenu/vanzari/pagina/1">Sales</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Group cows</a>
+                <div class="dropdown-content">
+                    <br>
+                    <a href="/listaGrupuri">Groups</a>
+                    <a href="/adaugaGrup">Create new group</a>
+                </div>
+            </li>
+            <li>
+                <a href="/logout" method="POST">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="main_content">
+        <div class="header">
+            <h4 style="display: inline-block">
+                Dashboard
+            </h4>
+            <span class="bi bi-bell-fill bell-icon" style="padding-left: 1200px">
+                <a th:href="@{/adminPanel/farmMenu/notifications/pagina/1}"></a>
+            </span>
+        </div>
+        <div class="info">
+            <div id="outerboxes" style="text-align: left">
+                <div class="inner" style="padding-right: 30px">
+                    <div class="mini-stat clearfix bg-firstbox rounded">
+                        <div class="mini-stat-info">
+                            <div id="clock" style="font-size: 30px;"></div>
+                            <div id="date" style="font-size: 20px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inner" style="padding-right: 30px">
+                    <div class="mini-stat clearfix bg-secondbox rounded">
+                            <span class="mini-stat-icon">
+                                <img src="icons/farmericon.png" width="60px" height="60px" alt="farmericon">
+                            </span>
+                            <div class="mini-stat-info">
+                                <span th:text="${totalEmployers}"></span>
+                                angajați sunt înregistrați
+                            </div>
+                        </div>
+                    </div>
+                <div class="inner" style="padding-right: 30px">
+                        <div class="mini-stat clearfix bg-thirdbox rounded">
+                            <span class="mini-stat-icon">
+                                <img src="icons/moneyicon.png" width="60px" height="60px" alt="moneyicon">
+                            </span>
+                            <div class="mini-stat-info">
+                                <span th:text="${furajeTotalCost != null ? furajeTotalCost : 0}"></span>
+                                cheltuielile pentru aceasta luna.
+                            </div>
+                        </div>
+                    </div>
+                <div class="inner" style="padding-right: 30px">
+                        <div class="mini-stat clearfix bg-fourbox rounded">
+                            <span class="mini-stat-icon">
+                                <img src="icons/cowicon.png" width="60px" height="60px" alt="cowicon">
+                            </span>
+                            <div class="mini-stat-info">
+                                <span th:text="${totalCows}"></span>
+                                văci sunt înregistrate
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <center>
+                <form method="get" th:action="@{/adminPanel}" style="width: auto">
+                    <h4>Accounting</h4>
+                    <div>
+                            <input type="date" id="startDate" name="startDate"  placeholder="yyyy-MM-dd" required style="width: 400px"> -
+                            <input type="date" id="endDate" name="endDate" placeholder="yyyy-MM-dd" required style="width: 400px">
+                            <br>
+                            <br>
+                            <button class="btn success" type="submit" style="text-align: right">Calculeaza</button>
+                    </div>
+
+                    <table class="content-table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Ianuarie</th>
+                            <th>Februarie</th>
+                            <th>Martie</th>
+                            <th>Aprilie</th>
+                            <th>Mai</th>
+                            <th>Iunie</th>
+                            <th>Iulie</th>
+                            <th>August</th>
+                            <th>Septembrie</th>
+                            <th>Octombrie</th>
+                            <th>Noiembrie</th>
+                            <th>Decembrie</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th>Cheltuieli</th>
+                            <th th:text="(${januaryExpends} + MDL)"></th>
+                            <th th:text="(${februaryExpends} + MDL)"></th>
+                            <th th:text="(${marchExpends} + MDL)"></th>
+                            <th th:text="(${aprilExpends} + MDL)"></th>
+                            <th th:text="(${mayExpends} + MDL)"></th>
+                            <th th:text="(${juneExpends} + MDL)"></th>
+                            <th th:text="(${julyExpends} + MDL)"></th>
+                            <th th:text="(${augustExpends} + MDL)"></th>
+                            <th th:text="(${septemberExpends} + MDL)"></th>
+                            <th th:text="(${octoberExpends} + MDL)"></th>
+                            <th th:text="(${novemberExpends} + MDL)"></th>
+                            <th th:text="(${decemberExpends} + MDL)"></th>
+                        </tr>
+
+                        <tr>
+                            <th>Vanzari</th>
+                            <th th:text="(${januaryIncomes} + MDL)"></th>
+                            <th th:text="(${februaryIncomes} + MDL)"></th>
+                            <th th:text="(${marchIncomes} + MDL)"></th>
+                            <th th:text="(${aprilIncomes} + MDL)"></th>
+                            <th th:text="(${mayIncomes} + MDL)"></th>
+                            <th th:text="(${juneIncomes} + MDL)"></th>
+                            <th th:text="(${julyIncomes} + MDL)"></th>
+                            <th th:text="(${augustIncomes} + MDL)"></th>
+                            <th th:text="(${septemberIncomes} + MDL)"></th>
+                            <th th:text="(${octoberIncomes} + MDL)"></th>
+                            <th th:text="(${novemberIncomes} + MDL)"></th>
+                            <th th:text="(${decemberIncomes} + MDL)"></th>
+                        </tr>
+
+                        <tr>
+                            <th>Rentabilitate</th>
+                            <th  th:text="(${januaryTotal} + MDL)"
+                                 th:style="${januaryExpends <= januaryIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                            <th th:text="(${februaryTotal} + MDL)"
+                                th:style="${februaryExpends <= februaryIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                            <th th:text="(${marchTotal} + MDL)"
+                                th:style="${marchExpends <= marchIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                            <th th:text="(${aprilTotal} + MDL)"
+                                th:style="${aprilExpends <= aprilIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                            <th th:text="(${mayTotal} + MDL)"
+                                th:style="${mayExpends <= mayIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                            <th th:text="(${juneTotal} + MDL)"
+                                th:style="${juneExpends <= juneIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                            <th th:text="(${julyTotal} + MDL)"
+                                th:style="${julyExpends <= julyIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                            <th th:text="(${augustTotal} + MDL)"
+                                th:style="${augustExpends <= augustIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                            <th th:text="(${septemberTotal} + MDL)"
+                                th:style="${septemberExpends <= septemberIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                            <th th:text="(${octoberTotal} + MDL)"
+                                th:style="${octoberExpends <= octoberIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                            <th th:text="(${novemberTotal} + MDL)"
+                                th:style="${novemberExpends <= novemberIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                            <th th:text="(${decemberTotal} + MDL)"
+                                th:style="${decemberExpends <= decemberIncomes ? 'color: green' : 'color: red'}">
+                            </th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </center>
+            <br>
+
+                <div id="outerstatisticsfirst">
+                    <form style="width: 600px; height: 350px; display: inline-flex">
+                    <div class="inner" style="width: 550px; height: 300px">
+                        <canvas id="line"></canvas>
+                    </div>
+                    </form>
+                    <form style="width: 600px; height: 350px; display: inline-flex">
+                        <div class="inner" style="width: 550px; height: 300px">
+                            <canvas id="bar"></canvas>
+                        </div>
+                    </form>
+                </div>
+
+                    <div id="outerstatisticssecond">
+                        <form style="width: 600px; height: 350px; display: inline-flex">
+                            <div class = "inner" style="width: 400px; height: 300px">
+                                <canvas id="polarArea"></canvas>
+                            </div>
+                        </form>
+                    </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function startTime() {
+        var today = new Date();
+        var hr = today.getHours();
+        var min = today.getMinutes();
+        var sec = today.getSeconds();
+        ap = (hr < 12) ? "<p style='display: inline'>AM</p>" : "<p>PM</p>";
+        hr = (hr == 0) ? 12 : hr;
+        hr = (hr > 12) ? hr - 12 : hr;
+        //Add a zero in front of numbers<10
+        hr = checkTime(hr);
+        min = checkTime(min);
+        sec = checkTime(sec);
+        document.getElementById("clock").innerHTML = hr + ":" + min + ":" + sec + " " + ap;
+
+        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        var curWeekDay = days[today.getDay()];
+        var curDay = today.getDate();
+        var curMonth = months[today.getMonth()];
+        var curYear = today.getFullYear();
+        var date = curWeekDay+", "+curDay+" "+curMonth+" "+curYear;
+        document.getElementById("date").innerHTML = date;
+
+        var time = setTimeout(function(){ startTime() }, 500);
+    }
+    function checkTime(i) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    }
+    startTime();
+</script>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        var vacaModelCountByRasa = [[${vacaModelCountByRasa}]]
+        var lucratorModelCountByRemunerare = [[${lucratorModelCountByRemunerare}]]
+    </script>
+    <script type="text/javascript">
+            const labelCowCount = vacaModelCountByRasa.map(labelCowCount => labelCowCount[0]);
+            const dataCowsCount = vacaModelCountByRasa.map(dataCowsCount => dataCowsCount[1]);
+
+            const labelEmployeeCount = lucratorModelCountByRemunerare.map(labelEmployeeCount => labelEmployeeCount[0]);
+            const dataEmployeeCount = lucratorModelCountByRemunerare.map(dataEmployeeCount => dataEmployeeCount[1]);
+
+            const januaryExpends = parseInt([[${januaryExpends}]]);
+            const februaryExpends = parseInt([[${februaryExpends}]]);
+            const marchExpends = parseInt([[${marchExpends}]]);
+            const aprilExpends = parseInt([[${aprilExpends}]]);
+            const mayExpends = parseInt([[${mayExpends}]]);
+            const juneExpends = parseInt([[${juneExpends}]]);
+            const julyExpends = parseInt([[${julyExpends}]]);
+            const augustExpends = parseInt([[${augustExpends}]]);
+            const septemberExpends = parseInt([[${septemberExpends}]]);
+            const octoberExpends = parseInt([[${octoberExpends}]]);
+            const novemberExpends = parseInt([[${novemberExpends}]]);
+            const decemberExpends = parseInt([[${decemberExpends}]]);
+
+            const expends = [januaryExpends, februaryExpends, marchExpends, aprilExpends, mayExpends, juneExpends, julyExpends, augustExpends, septemberExpends, octoberExpends, novemberExpends, decemberExpends];
+
+            const januaryIncomes = parseInt([[${januaryIncomes}]]);
+            const februaryIncomes = parseInt([[${februaryIncomes}]]);
+            const marchIncomes = parseInt([[${marchIncomes}]]);
+            const aprilIncomes = parseInt([[${aprilIncomes}]]);
+            const mayIncomes = parseInt([[${mayIncomes}]]);
+            const juneIncomes= parseInt([[${juneIncomes}]]);
+            const julyIncomes = parseInt([[${julyIncomes}]]);
+            const augustIncomes = parseInt([[${augustIncomes}]]);
+            const septemberIncomes = parseInt([[${septemberIncomes}]]);
+            const octoberIncomes = parseInt([[${octoberIncomes}]]);
+            const novemberIncomes = parseInt([[${novemberIncomes}]]);
+            const decemberIncomes = parseInt([[${decemberIncomes}]]);
+
+            const incomes = [januaryIncomes, februaryIncomes, marchIncomes, aprilIncomes, mayIncomes, juneIncomes, julyIncomes, augustIncomes, septemberIncomes, octoberIncomes, novemberIncomes, decemberIncomes];
+
+            const januaryTotal = parseInt([[${januaryTotal}]]);
+            const februaryTotal = parseInt([[${februaryTotal}]]);
+            const marchTotal = parseInt([[${marchTotal}]]);
+            const aprilTotal = parseInt([[${aprilTotal}]]);
+            const mayTotal = parseInt([[${mayTotal}]]);
+            const juneTotal= parseInt([[${juneTotal}]]);
+            const julyTotal = parseInt([[${julyTotal}]]);
+            const augustTotal = parseInt([[${augustTotal}]]);
+            const septemberTotal = parseInt([[${septemberTotal}]]);
+            const octoberTotal = parseInt([[${octoberTotal}]]);
+            const novemberTotal = parseInt([[${novemberTotal}]]);
+            const decemberTotal = parseInt([[${decemberTotal}]]);
+
+            const totals = [januaryTotal, februaryTotal, marchTotal, aprilTotal, mayTotal, juneTotal, julyTotal, augustTotal, septemberTotal, octoberTotal, novemberTotal, decemberTotal];
+
+
+
+            console.log(labelCowCount);
+            console.log(dataCowsCount);
+            console.log(labelEmployeeCount);
+            console.log(dataEmployeeCount);
+
+            const lineChart = document.getElementById("line").getContext('2d');
+            new Chart(lineChart,{
+                type: 'line',
+                data: {
+                    labels: ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'],
+                    datasets: [
+                        {
+                        label: "Venituri",
+                        data : incomes,
+                    },
+                        {
+                            label: "Cheltuieli",
+                            data : expends,
+                        },
+                        {
+                            label : "Rentabilitate",
+                            data : totals,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    stacked: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Accounting'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+
+                            // grid line settings
+                            grid: {
+                                drawOnChartArea: false, // only want the grid lines for one axis to show up
+                            },
+                        },
+                    }
+                },
+            });
+
+            const barChart = document.getElementById("bar").getContext('2d');
+            new Chart(barChart,{
+                type: 'bar',
+                data: {
+                    labels: labelEmployeeCount,
+                    datasets: [{
+                        label: 'Numarul de angajati',
+                        data: dataEmployeeCount,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Numărul de angajați grupați după remunerare pe oră'
+                        }
+                    }
+                }
+            });
+
+            const polarAreaChart = document.getElementById('polarArea').getContext('2d');
+            new Chart(polarAreaChart, {
+                    type: 'polarArea',
+                    data: {
+                        labels: labelCowCount,
+                            datasets: [{
+                                label: 'Numarul de animale',
+                                data: dataCowsCount,
+                                }]
+                            },
+                    options: {
+                        scales: {
+                                y: {
+                                beginAtZero: true
+                                }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Numărul de văci grupate după categorie'
+                            }
+                        }
+                    }
+            });
+    </script>
+</th:block>
+</body>
+</html>

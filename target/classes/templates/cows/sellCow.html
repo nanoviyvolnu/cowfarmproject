@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" th:href="@{/css/style.css}" href="/static/css/style.css" type="text/css" />
+  <meta charset="UTF-8">
+  <title>Vinde vaca</title>
+</head>
+<body>
+<div class="wrapper">
+  <div class="sidebar">
+    <h2>Welcome!</h2>
+    <ul>
+      <li><a href="/adminPanel">Dashbord</a></li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Cows</a>
+        <div class="dropdown-content">
+          <br>
+          <a th:href="@{/adminPanel/listaVaci/pagina/1}">Cows</a>
+          <a th:href="@{/adminPanel/vacileInsarcinate/pagina/1}">Pregnat cows</a>
+          <a th:href="@{/adminPanel/vacileMoarte/pagina/1}">Died cows</a>
+          <a th:href="@{/adminPanel/vacileBolnave/pagina/1}">Sick cows</a>
+        </div>
+      </li>
+      <li><a href="/adminPanel/listaAngajati/pagina/1">Employers</a></li>
+      <li><a href="/adminPanel/listaProduseZootehnice/pagina/1">Livestock Produce</a></li>
+      <li><a href="/adminPanel/listaFuraje/pagina/1">Feeds</a></li>
+      <li><a href="/adminPanel/listaInventar/pagina/1">Inventory</a></li>
+      <li><a href="/adminPanel/tasks/pagina/1">Task-uri</a></li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Mini ERP</a>
+        <div class="dropdown-content">
+          <br>
+          <a href="/adminPanel/farmMenu/users">Administration</a>
+          <a href="/adminPanel/farmMenu/clienti">Clients</a>
+          <a href="/adminPanel/farmMenu/cheltuieliFuraje">Feed expenses</a>
+          <a href="/adminPanel/farmMenu/vanzari/pagina/1">Sales</a>
+        </div>
+      </li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Group cows</a>
+        <div class="dropdown-content">
+          <br>
+          <a href="/listaGrupuri">Groups</a>
+          <a href="/adaugaGrup">Create new group</a>
+        </div>
+      </li>
+      <li>
+        <a href="/logout" method="POST">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="main_content">
+    <div class="header">
+      <h4>
+        Introduceti datele spre vanzare
+      </h4>
+    </div>
+    <div class="info" align="center">
+      <center>
+        <form action="#" th:action="@{/adminPanel/listaVaci/vindeVaca/save}" th:method="POST">
+
+          <input type="hidden" th:value="${vacaModel.idVaca}" id="idVaca" name="idVaca">
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-25">
+                <label for="pretul">Pretul:</label>
+              </div>
+              <div class="col-75">
+                <input type="text" id="pretul" name="pretul" placeholder="Pretul">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-25">
+                <label for="org">Organizatia</label>
+              </div>
+              <div class="col-75">
+                <select id="org" name="organizatia" style="width: 250px">
+                  <option selected="selected" value="">Alege o opțiune</option>
+                  <option th:each="clientiModelOrganizatia : ${organizatiaSelector}"
+                          th:value="${clientiModelOrganizatia}"
+                          th:text="${clientiModelOrganizatia}">
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-25">
+                <label for="dataVanzare">Data vanzarii:</label>
+              </div>
+              <div class="col-75">
+                <input type="date" id="dataVanzare" name="dataVanzare" placeholder="yyyy-MM-dd">
+              </div>
+            </div>
+          </div>
+
+          <button class="btn back">
+            <a href="/adminPanel/listaVaci/pagina/1">Lista vacilor</a>
+          </button>
+          <button class="btn success" type="submit">
+            Vinde
+          </button>
+        </form>
+      </center>
+    </div>
+  </div>
+</div>
+</body>
+</html>

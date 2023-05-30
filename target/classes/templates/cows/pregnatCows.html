@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" th:href="@{/css/style.css}" href="/static/css/style.css" type="text/css" />
+  <meta charset="UTF-8">
+  <title>Lista vacilor insarcinate</title>
+</head>
+<body>
+<div class="wrapper">
+  <div class="sidebar">
+    <h2>Welcome!</h2>
+    <ul>
+      <li><a href="/adminPanel">Dashbord</a></li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Cows</a>
+        <div class="dropdown-content">
+          <br>
+          <a th:href="@{/adminPanel/listaVaci/pagina/1}">Cows</a>
+          <a th:href="@{/adminPanel/vacileInsarcinate/pagina/1}">Pregnat cows</a>
+          <a th:href="@{/adminPanel/vacileMoarte/pagina/1}">Died cows</a>
+          <a th:href="@{/adminPanel/vacileBolnave/pagina/1}">Sick cows</a>
+        </div>
+      </li>
+      <li><a href="/adminPanel/listaAngajati/pagina/1">Employers</a></li>
+      <li><a href="/adminPanel/listaProduseZootehnice/pagina/1">Livestock Produce</a></li>
+      <li><a href="/adminPanel/listaFuraje/pagina/1">Feeds</a></li>
+      <li><a href="/adminPanel/listaInventar/pagina/1">Inventory</a></li>
+      <li><a href="/adminPanel/tasks/pagina/1">Task-uri</a></li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Mini ERP</a>
+        <div class="dropdown-content">
+          <br>
+          <a href="/adminPanel/farmMenu/users">Administration</a>
+          <a href="/adminPanel/farmMenu/clienti">Clients</a>
+          <a href="/adminPanel/farmMenu/cheltuieliFuraje">Feed expenses</a>
+          <a href="/adminPanel/farmMenu/vanzari/pagina/1">Sales</a>
+        </div>
+      </li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Group cows</a>
+        <div class="dropdown-content">
+          <br>
+          <a href="/listaGrupuri">Groups</a>
+          <a href="/adaugaGrup">Create new group</a>
+        </div>
+      </li>
+      <li>
+        <a href="/logout" method="POST">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="main_content">
+    <div class="header">
+      <h4>
+        Lista văcilor insarcinate
+      </h4>
+    </div>
+    <div class="info">
+
+      <form th:action="@{/adminPanel/vacileInsarcinate/pagina/1}" style="width: auto; height: 150px" method="GET">
+        <h6>Cauta animalul dupa rasă: </h6>
+        <div id="outer">
+          <div class="inner" style="float: left">
+            <input type="text" name="rasa" th:value="${rasa}" style="width: 400px; height: 40px;"/>
+            <button class="btn find" type="submit">
+              Search
+            </button>
+          </div>
+          <div class="inner">
+            <button class="btn success">
+              <a href="/adminPanel/adaugaVaca">Adauga vaci</a>
+            </button>
+          </div>
+          <div class="inner">
+            <button class="btn export">
+              <a href="/adminPanel/vacileInsarcinate/export-to-pdf">Export pdf</a>
+            </button>
+          </div>
+          <div class="inner">
+            <button class="btn clear" style="float: left">
+              <a href="/adminPanel/vacileInsarcinate/pagina/1">Sterge filtrul</a>
+            </button>
+          </div>
+        </div>
+      </form>
+      <center>
+        <form style="width: auto; height: auto">
+        <table class="content-table">
+          <thead>
+          <tr>
+            <th>Codul</th>
+            <th>Poza</th>
+            <th>Rasa</th>
+            <th>Masa initiala</th>
+            <th>Masa la moment</th>
+            <th>Starea sanatatii</th>
+            <th>Statutul</th>
+            <th>Forma de achizitie</th>
+            <th>Data luarii evidente</th>
+            <th>Genul</th>
+            <th>Categorie</th>
+            <th>Pretul</th>
+            <th align="center">Manage</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="vacaModel : ${vacaModelListPregnatCows}">
+            <td th:text="${vacaModel.codul}"></td>
+            <td><img th:src="${vacaModel.getPhotosImagePathCow}" width="50" height="50"/></td>
+            <td th:text="${vacaModel.rasa}"></td>
+            <td th:text="(${vacaModel.masaKgInitiala} + KG)"></td>
+            <td th:text="(${vacaModel.masaKgMoment} + KG)"></td>
+            <td th:text="${vacaModel.stareaSanatatii}"></td>
+            <td th:text="${vacaModel.statutul}"></td>
+            <td th:text="${vacaModel.formaAchizitie}"></td>
+            <td th:text="${vacaModel.dataLuariiEvidenta}"></td>
+            <td th:text="${vacaModel.genul}"></td>
+            <td th:text="${vacaModel.categorie}"></td>
+            <td th:text="${vacaModel.pretul}"></td>
+            <td>
+<!--              <button class="btn delete">-->
+<!--                <a th:href="@{stergeVaca/{idVaca}(idVaca=${vacaModel.idVaca})}">Sterge</a>-->
+<!--              </button>-->
+              <button class="btn edit">
+                <a th:href="@{/adminPanel/editeazaVaca/pagina/{pageNumber}/{idVaca}(pageNumber=${currentPage},idVaca=${vacaModel.idVaca})}">Editeaza</a>
+              </button>
+
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <footer style="font-size: large; display: flex" class="panel-footer">
+          Total Items [[${totalItems}]] : Page [[${currentPage}]] of [[${totalPages}]]
+          &nbsp; &nbsp; - &nbsp;
+          <div th:if="${#strings.isEmpty(rasa)}">
+                        <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                        <a th:href="@{'/adminPanel/vacileInsarcinate/pagina/' + ${i}}">[[${i}]]</a>
+                            &nbsp; &nbsp;
+                        </span>
+          </div>
+          <div th:if="${!#strings.isEmpty(rasa)}">
+                        <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                        <a th:href="@{'/adminPanel/vacileInsarcinate/pagina/' + ${i} + '?rasa=' + ${rasa}}">[[${i}]]</a>
+                         &nbsp; &nbsp;
+                        </span>
+          </div>
+        </footer>
+        </form>
+      </center>
+    </div>
+  </div>
+</div>
+</body>
+</html>

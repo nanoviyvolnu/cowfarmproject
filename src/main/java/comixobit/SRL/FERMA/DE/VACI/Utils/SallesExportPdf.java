@@ -50,6 +50,12 @@ public class SallesExportPdf {
         cell.setPhrase(new Phrase("Tip produs", font));
         table.addCell(cell);
 
+        cell.setPhrase(new Phrase("Rasa", font));
+        table.addCell(cell);
+
+        cell.setPhrase(new Phrase("Categorie", font));
+        table.addCell(cell);
+
         cell.setPhrase(new Phrase("Data expirarii", font));
         table.addCell(cell);
 
@@ -67,9 +73,36 @@ public class SallesExportPdf {
             table.addCell(vanzariModel.getClientiModel().getEmail());
             table.addCell(vanzariModel.getClientiModel().getNrTel());
             table.addCell(vanzariModel.getClientiModel().getOrganizatia());
-            table.addCell(String.valueOf(vanzariModel.getCantitate()));
-            table.addCell(vanzariModel.getProduseZootehniceModel().getTipProdus());
-            table.addCell(String.valueOf(vanzariModel.getProduseZootehniceModel().getDataExpirarii()));
+            if(vanzariModel.getCantitate() != 0) {
+                table.addCell(String.valueOf(vanzariModel.getCantitate()));
+            }
+            else {
+                table.addCell("NULL");
+            }
+            if(vanzariModel.getProduseZootehniceModel() != null && vanzariModel.getProduseZootehniceModel().getTipProdus() != null) {
+                table.addCell(vanzariModel.getProduseZootehniceModel().getTipProdus());
+            }
+            else{
+                table.addCell("NULL");
+            }
+            if(vanzariModel.getVacaModel() != null && vanzariModel.getVacaModel().getRasa() != null) {
+                table.addCell(vanzariModel.getVacaModel().getRasa());
+            }
+            else{
+                table.addCell("NULL");
+            }
+            if(vanzariModel.getVacaModel() != null && vanzariModel.getVacaModel().getCategorie() != null){
+                table.addCell(vanzariModel.getVacaModel().getCategorie());
+            }
+            else{
+                table.addCell("NULL");
+            }
+            if(vanzariModel.getProduseZootehniceModel() != null){
+                table.addCell(String.valueOf(vanzariModel.getProduseZootehniceModel().getDataExpirarii()));
+            }
+            else {
+                table.addCell("NULL");
+            }
             table.addCell(String.valueOf(vanzariModel.getDataVanzare()));
             table.addCell(String.valueOf(vanzariModel.getPretul()));
         }
@@ -89,9 +122,9 @@ public class SallesExportPdf {
 
         document.add(p);
 
-        PdfPTable table = new PdfPTable(10);
+        PdfPTable table = new PdfPTable(12);
         table.setWidthPercentage(100f);
-        table.setWidths(new float[] {2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f});
+        table.setWidths(new float[] {2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f});
         table.setSpacingBefore(5);
 
         writeTableHeader(table);

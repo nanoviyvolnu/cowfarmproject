@@ -2,7 +2,6 @@ package comixobit.SRL.FERMA.DE.VACI.Models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -10,8 +9,6 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "vanzari")
@@ -31,6 +28,11 @@ public class VanzariModel {
     @JoinColumn(name = "Id_client")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ClientiModel clientiModel;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Id_vaca")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private VacaModel vacaModel;
 
     @NotNull(message = "Coloana nu poate fi pustie!")
     @Column(name = "Cantitate")

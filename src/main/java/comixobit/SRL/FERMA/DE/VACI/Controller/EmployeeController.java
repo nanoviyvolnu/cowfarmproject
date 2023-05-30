@@ -2,6 +2,7 @@ package comixobit.SRL.FERMA.DE.VACI.Controller;
 
 import com.lowagie.text.DocumentException;
 import comixobit.SRL.FERMA.DE.VACI.Models.LucratorModel;
+import comixobit.SRL.FERMA.DE.VACI.Models.VacaModel;
 import comixobit.SRL.FERMA.DE.VACI.Repository.EmployeeRepository;
 import comixobit.SRL.FERMA.DE.VACI.Utils.ExportCowsByPdf;
 import comixobit.SRL.FERMA.DE.VACI.Utils.ExportEmployersByPdf;
@@ -9,6 +10,7 @@ import comixobit.SRL.FERMA.DE.VACI.Utils.FIleUploadUtil;
 import comixobit.SRL.FERMA.DE.VACI.Service.EmployeeService;
 import comixobit.SRL.FERMA.DE.VACI.Utils.ValidatorUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -43,10 +45,24 @@ public class EmployeeController {
         binder.addValidators(validatorUtil);
     }
 
+
     @GetMapping("/listaAngajati")
-    public String allEmployers(Model model){
-        List<LucratorModel> lucratorModelList = employeeService.selectAllEmployee();
-        model.addAttribute("lucratorModelList", lucratorModelList);
+    public String getAllPages(Model model){
+        return getOnePage(model, 1);
+    }
+    @GetMapping("/listaAngajati/pagina/{pageNumber}")
+    public String getOnePage(Model model,
+                             @PathVariable("pageNumber") int currentPage) {
+            Page<LucratorModel> page = employeeService.findPage(currentPage);
+            int totalPage = page.getTotalPages();
+            long totalItems = page.getTotalElements();
+            List<LucratorModel> lucratorModelList = page.getContent();
+
+            model.addAttribute("currentPage", currentPage);
+            model.addAttribute("totalPages", totalPage);
+            model.addAttribute("totalItems", totalItems);
+            model.addAttribute("lucratorModelList", lucratorModelList);
+
         return "employee/listEmployee";
     }
 
@@ -80,15 +96,31 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping("/stergeAngajat/{idLucrator}")
-    public String deleteEmployee(@PathVariable("idLucrator") Integer id) {
+    @GetMapping("/stergeAngajat/pagina/{pageNumber}/{idLucrator}")
+    public String deleteEmployee(@PathVariable("idLucrator") Integer id,
+                                 @PathVariable("pageNumber") int currentPage,
+                                 Model model) {
+        Page<LucratorModel> page = employeeService.findPage(currentPage);
+        int totalPage = page.getTotalPages();
+        long totalItems = page.getTotalElements();
+        model.addAttribute("page", page);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("totalItems", totalItems);
         employeeService.deleteById(id);
         return "redirect:/adminPanel/listaAngajati";
     }
 
-    @GetMapping("/editeazaAngajat/{idLucrator}")
-    public String createEmployeeFormUpdate(@PathVariable("idLucrator") Integer id, Model model) {
+    @GetMapping("/editeazaAngajat/pagina/{pageNumber}/{idLucrator}")
+    public String createEmployeeFormUpdate(@PathVariable("idLucrator") Integer id,
+                                           @PathVariable("pageNumber") int currentPage,
+                                            Model model) {
         LucratorModel lucratorModel = employeeService.findById(id);
+        Page<LucratorModel> page = employeeService.findPage(currentPage);
+        int totalPage = page.getTotalPages();
+        long totalItems = page.getTotalElements();
+        model.addAttribute("page", page);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("totalItems", totalItems);
         model.addAttribute("lucratorModel", lucratorModel);
         return "employee/updateEmployee";
     }

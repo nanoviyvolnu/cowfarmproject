@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/static/css/style.css" type="text/css" />
+    <meta charset="UTF-8">
+    <title>Cheltuieli</title>
+</head>
+<body>
+<div class="wrapper">
+    <div class="sidebar">
+        <h2>Welcome!</h2>
+        <ul>
+            <li><a href="/adminPanel">Dashbord</a></li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Cows</a>
+                <div class="dropdown-content">
+                    <br>
+                    <a th:href="@{/adminPanel/listaVaci/pagina/1}">Cows</a>
+                    <a th:href="@{/adminPanel/vacileInsarcinate/pagina/1}">Pregnat cows</a>
+                    <a th:href="@{/adminPanel/vacileMoarte/pagina/1}">Died cows</a>
+                    <a th:href="@{/adminPanel/vacileBolnave/pagina/1}">Sick cows</a>
+                </div>
+            </li>
+            <li><a href="/adminPanel/listaAngajati/pagina/1">Employers</a></li>
+            <li><a href="/adminPanel/listaProduseZootehnice/pagina/1">Livestock Produce</a></li>
+            <li><a href="/adminPanel/listaFuraje/pagina/1">Feeds</a></li>
+            <li><a href="/adminPanel/listaInventar/pagina/1">Inventory</a></li>
+            <li><a href="/adminPanel/tasks/pagina/1">Task-uri</a></li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Mini ERP</a>
+                <div class="dropdown-content">
+                    <br>
+                    <a href="/adminPanel/farmMenu/users">Administration</a>
+                    <a href="/adminPanel/farmMenu/clienti">Clients</a>
+                    <a href="/adminPanel/farmMenu/cheltuieliFuraje">Feed expenses</a>
+                    <a href="/adminPanel/farmMenu/vanzari/pagina/1">Sales</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Group cows</a>
+                <div class="dropdown-content">
+                    <br>
+                    <a href="/listaGrupuri">Groups</a>
+                    <a href="/adaugaGrup">Create new group</a>
+                </div>
+            </li>
+            <li>
+                <a href="/logout" method="POST">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="main_content">
+        <div class="header">
+            <h4>
+                Cheltuielile pe furaje
+            </h4>
+        </div>
+        <div class="info">
+            <button class="btn export">
+                <a href="/adminPanel/farmMenu/cheltuieliFuraje/export-to-pdf">Export pdf</a>
+            </button>
+            <center>
+            <table class="content-table">
+                <thead>
+                <tr>
+                    <th>Tipul furaj</th>
+                    <th>Cantitatea primita</th>
+                    <th>Calitatea</th>
+                    <th>Costul pe unitate</th>
+                    <th>Costul total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="furajeModel : ${furajeModelList}">
+                    <td th:text="${furajeModel.tipulFuraj}"></td>
+                    <td th:text="(${furajeModel.cantitateaPrimita} + KG)"></td>
+                    <td th:text="${furajeModel.calitatea}"></td>
+                    <td th:text="(${furajeModel.costulPerUnitate} + MDL)"></td>
+                    <td th:text="(${furajeModel.costulTotal} + MDL)"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <center style="font-weight: bold">TOTALURILE</center>
+                    </td>
+                    <td colspan="3">
+                        <label th:text="(${furajeSumQuantity} + KG)"></label>
+                    </td>
+                    <td colspan="">
+                        <label th:text="(${furajeTotalCost} + MDL)"></label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            </center>
+        </div>
+    </div>
+</div>
+</body>
+</html>

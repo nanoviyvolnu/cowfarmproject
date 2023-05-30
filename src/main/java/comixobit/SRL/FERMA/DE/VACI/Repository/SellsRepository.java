@@ -3,6 +3,8 @@ package comixobit.SRL.FERMA.DE.VACI.Repository;
 import comixobit.SRL.FERMA.DE.VACI.Models.FurajeModel;
 import comixobit.SRL.FERMA.DE.VACI.Models.ProduseZootehniceModel;
 import comixobit.SRL.FERMA.DE.VACI.Models.VanzariModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -32,11 +34,32 @@ public interface SellsRepository extends JpaRepository<VanzariModel, Integer> {
     List<VanzariModel> findByProduseZootehniceModel(ProduseZootehniceModel produseZootehniceModel);
 
     @Query(value = "SELECT vanzari.Id_vanzare, clienti.Nume, clienti.Prenume,\n" +
-            "clienti.Email, clienti.Nr_tel, clienti.Organizatia, vanzari.Cantitate, produsezootehnice.tip_produs, \n" +
-            "produsezootehnice.data_expirarii, vanzari.Data_vanzare, vanzari.Pretul, clienti.Id_client AS id_client, produsezootehnice.Id_lot AS id_lot\n" +
+            "clienti.Email, clienti.Nr_tel, clienti.Organizatia, vanzari.Cantitate, produsezootehnice.tip_produs,\n" +
+            "vaca.Rasa, vaca.Categorie,\n" +
+            "produsezootehnice.data_expirarii, vanzari.Data_vanzare, vanzari.Pretul,\n" +
+            "clienti.Id_client AS id_client,\n" +
+            "produsezootehnice.Id_lot AS id_lot,\n" +
+            "vaca.Id_vaca AS id_vaca\n" +
             "FROM vanzari\n" +
-            "INNER JOIN produsezootehnice ON  produsezootehnice.id_lot = vanzari.Id_lot\n" +
-            "INNER JOIN clienti ON  clienti.Id_client = vanzari.Id_client", nativeQuery = true)
+            "LEFT JOIN produsezootehnice ON  produsezootehnice.id_lot = vanzari.Id_lot\n" +
+            "LEFT JOIN clienti ON clienti.Id_client = vanzari.Id_client \n" +
+            "LEFT JOIN vaca ON vaca.Id_vaca = vanzari.Id_vaca " +
+            "ORDER BY vanzari.Data_vanzare DESC", nativeQuery = true)
+    Page<VanzariModel> getClientiVanzariProdusePage(Pageable pageable);
+
+
+    @Query(value = "SELECT vanzari.Id_vanzare, clienti.Nume, clienti.Prenume,\n" +
+            "clienti.Email, clienti.Nr_tel, clienti.Organizatia, vanzari.Cantitate, produsezootehnice.tip_produs,\n" +
+            "vaca.Rasa, vaca.Categorie,\n" +
+            "produsezootehnice.data_expirarii, vanzari.Data_vanzare, vanzari.Pretul,\n" +
+            "clienti.Id_client AS id_client,\n" +
+            "produsezootehnice.Id_lot AS id_lot,\n" +
+            "vaca.Id_vaca AS id_vaca\n" +
+            "FROM vanzari\n" +
+            "LEFT JOIN produsezootehnice ON  produsezootehnice.id_lot = vanzari.Id_lot\n" +
+            "LEFT JOIN clienti ON clienti.Id_client = vanzari.Id_client \n" +
+            "LEFT JOIN vaca ON vaca.Id_vaca = vanzari.Id_vaca " +
+            "ORDER BY vanzari.Data_vanzare DESC", nativeQuery = true)
     List<VanzariModel> getClientiVanzariProduse();
 
     @Query(value = "SELECT COALESCE(SUM(Pretul), 0) FROM vanzari WHERE MONTH(Data_vanzare) = :month AND YEAR(Data_vanzare) BETWEEN YEAR(:startDate) AND YEAR(:endDate)", nativeQuery = true)

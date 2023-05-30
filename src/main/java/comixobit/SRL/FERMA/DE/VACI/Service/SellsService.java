@@ -2,19 +2,25 @@ package comixobit.SRL.FERMA.DE.VACI.Service;
 
 import comixobit.SRL.FERMA.DE.VACI.Models.ClientiModel;
 import comixobit.SRL.FERMA.DE.VACI.Models.ProduseZootehniceModel;
+import comixobit.SRL.FERMA.DE.VACI.Models.VacaModel;
 import comixobit.SRL.FERMA.DE.VACI.Models.VanzariModel;
-import comixobit.SRL.FERMA.DE.VACI.Repository.ClientsRepository;
-import comixobit.SRL.FERMA.DE.VACI.Repository.LivestockProduceRepository;
-import comixobit.SRL.FERMA.DE.VACI.Repository.SellsRepository;
+import comixobit.SRL.FERMA.DE.VACI.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class SellsService {
+public class
+SellsService {
     @Autowired
     private SellsRepository sellsRepository;
 
@@ -22,7 +28,7 @@ public class SellsService {
     private LivestockProduceRepository livestockProduceRepository;
 
     @Autowired
-    private LivestockService livestockService;
+    private CowRepository cowRepository;
     @Autowired
     private ClientsRepository clientsRepository;
 
@@ -30,42 +36,72 @@ public class SellsService {
         return sellsRepository.getClientiVanzariProduse();
     }
 
+    public Page<VanzariModel> selectAllSoldLivestockPage(Integer pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber - 1,5);
+        return sellsRepository.getClientiVanzariProdusePage(pageable);
+    }
+
     public VanzariModel findById(Integer id) {
         return sellsRepository.getOne(id);
     }
 
     public void saveSoldLivestock(VanzariModel vanzariModel,
-                                  int cantitatea,
-                                  String organizatia,
-                                  String tipProdus,
-                                  Date dataExpirarii) {
+                                  Integer idLot,
+                                  int cantitate,
+                                  String organizatia) {
+        ProduseZootehniceModel produseZootehniceModel = livestockProduceRepository.getOne(idLot);
+        VacaModel vacaModel = new VacaModel();
         ClientiModel clientiModel = clientsRepository.findByOrganizatia(organizatia);
-        ProduseZootehniceModel produseZootehniceModel = livestockProduceRepository.findByTipProdusAndDataExpirarii(tipProdus, dataExpirarii);
 
-        if (clientiModel == null) {
-            throw new RuntimeException("ClientiModel not found");
+        if (cantitate > produseZootehniceModel.getCantitate()) {
+            throw new RuntimeException("Nu este destula cantitate!");
         }
 
-        if (produseZootehniceModel == null) {
-            throw new RuntimeException("ProduseZootehniceModel not found");
-        }
-
-        if (cantitatea > produseZootehniceModel.getCantitate()) {
-            throw new RuntimeException("Nu este destula cantitate");
+        if(vacaModel == null){
+            vanzariModel.setVacaModel(null);
         }
 
         vanzariModel.setClientiModel(clientiModel);
         vanzariModel.setProduseZootehniceModel(produseZootehniceModel);
 
 
-        // сохраняем объект VanzariModel
         sellsRepository.save(vanzariModel);
 
-        // уменьшаем количество продукта в ProduseZootehniceModel
-        int newQuantity = produseZootehniceModel.getCantitate() - cantitatea;
+        int newQuantity = produseZootehniceModel.getCantitate() - cantitate;
         produseZootehniceModel.setCantitate(newQuantity);
         livestockProduceRepository.save(produseZootehniceModel);
     }
+
+    public void saveSoldCows(VanzariModel vanzariModel,
+                             Integer idVaca,
+                             Integer cantitatea,
+                             String organizatia) {
+        VacaModel vacaModel = cowRepository.getOne(idVaca);
+        ProduseZootehniceModel produseZootehniceModel = new ProduseZootehniceModel();
+        ClientiModel clientiModel = clientsRepository.findByOrganizatia(organizatia);
+
+        if (clientiModel == null) {
+            throw new RuntimeException("Nu este inregistrat asa client!");
+        }
+
+        if(String.valueOf(cantitatea) == null){
+            vanzariModel.setCantitate(1);
+        }
+
+        if(produseZootehniceModel == null){
+            vanzariModel.setProduseZootehniceModel(null);
+        }
+
+        vanzariModel.setClientiModel(clientiModel);
+        vanzariModel.setVacaModel(vacaModel);
+
+        String statutul = "Vandut";
+        vacaModel.setStatutul(statutul);
+
+
+        sellsRepository.save(vanzariModel);
+    }
+
 
 
     public void deleteById(Integer id){

@@ -1,7 +1,15 @@
 package comixobit.SRL.FERMA.DE.VACI.Service;
 
 import comixobit.SRL.FERMA.DE.VACI.Models.LucratorModel;
+import comixobit.SRL.FERMA.DE.VACI.Models.TaskModel;
+import comixobit.SRL.FERMA.DE.VACI.Models.VacaModel;
 import comixobit.SRL.FERMA.DE.VACI.Repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +23,13 @@ public class EmployeeService {
     }
 
     public List<LucratorModel> selectAllEmployee(){
+        LucratorModel lucratorModel = new LucratorModel();
         return employeeRepository.findAll();
+    }
+
+    public Page<LucratorModel> findPage(Integer pageNumber){
+        Pageable pageable = PageRequest.of(pageNumber - 1,5);
+        return employeeRepository.findAll(pageable);
     }
 
     public LucratorModel findById(Integer id){
@@ -48,7 +62,8 @@ public class EmployeeService {
     }
 
     public int selectCountEmployers(){
-        return (int) employeeRepository.count();
+        return employeeRepository.countEmployers();
     }
+
 
 }

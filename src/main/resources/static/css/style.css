@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Arimo:wght@600&family=Rubik&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css");
+
+
 *{
     margin: 0;
     padding: 0;
@@ -167,9 +170,14 @@ a, a:hover, a:focus, a:active {
 .sell {background-color: #FFC300;}
 .sell:hover {background: #FFC300;}
 
+.find {background-color: #D8BFD8;}
+.find:hover {background: #D8BFD8;}
 
 .back {background-color: #f44336;}
 .back:hover {background: #da190b;}
+
+.clear {background-color: #F3690E}
+.clear:hover {background: #F3690E}
 
 li a, .dropbtn {
     display: inline-block;
@@ -256,3 +264,179 @@ form {
 div.form-group {
     margin-bottom: 1rem;
 }
+
+#outer
+{
+    width:100%;
+    text-align: right;
+}
+
+#outerboxes
+{
+    width:100%;
+    text-align: right;
+}
+
+#outerstatisticsfirst
+{
+    width:100%;
+    text-align: center;
+}
+
+#outerstatisticssecond
+{
+    width:100%;
+    text-align: center;
+}
+
+.inner
+{
+    display: inline-flex;
+}
+
+.rounded {
+    -webkit-border-radius: 3px !important;
+    -moz-border-radius: 3px !important;
+    border-radius: 3px !important;
+}
+
+.mini-stat {
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.mini-stat-icon {
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+    line-height: 60px;
+    text-align: center;
+    font-size: 30px;
+    border-radius: 100%;
+    float: left;
+    margin-right: 10px;
+}
+
+.mini-stat-info {
+    font-size: 12px;
+    padding-top: 2px;
+}
+
+
+.mini-stat-info span {
+    display: block;
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    margin-top: 7px;
+}
+
+.bg-firstbox {
+    background-color: #9547DF;
+    border: 1px solid #9547DF;
+    color: white;
+    width: 300px;
+    height: 100px;
+}
+
+.bg-secondbox {
+    background-color: #AC5CF7;
+    border: 1px solid #AC5CF7;
+    color: white;
+    width: 300px;
+    height: 100px;
+}
+
+.bg-thirdbox {
+    background-color: #9547DF;
+    border: 1px solid #9547DF;
+    color: white;
+    width: 300px;
+    height: 100px;
+}
+
+.bg-fourbox {
+    background-color: #AC5CF7;
+    border: 1px solid #AC5CF7;
+    color: white;
+    width: 300px;
+    height: 100px;
+}
+
+.fg-icons {
+    color: black !important;
+}
+
+/*.graphBox {*/
+/*    !*width: 50%;*!*/
+/*    !*padding: 10px;*!*/
+/*    !*width: 400px;*!*/
+/*    !*height: 400px;*!*/
+/*    text-align: center;*/
+/*}*/
+
+/*.graphBox:first-child {*/
+/*    margin-right: 5px;*/
+/*}*/
+
+.success {background-color: #04AA6D;}
+.success:hover {background-color: #46a049;}
+
+#clock{
+    font-size: 35px;
+}
+
+#date{
+    font-size: 20px;
+}
+
+.progress-bar {
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-direction: column;
+    -ms-flex-pack: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    overflow: hidden;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #007bff;
+    -webkit-transition: width .6s ease;
+    transition: width .6s ease;
+}
+
+.bg-success {
+    background-color: #54ca68 !important;
+}
+
+.bg-yellow {
+    background-color: #ff9800 !important;
+    color: #fff;
+}
+
+.bg-red {
+    background-color: #f44336 !important;
+    color: #fff;
+}
+
+.bg-red {
+    background-color: #f44336 !important;
+    color: #fff;
+}
+
+.progress {
+    -webkit-box-shadow: 0 0.4rem 0.6rem rgba(0,0,0,0.15);
+    box-shadow: 0 0.4rem 0.6rem rgba(0,0,0,0.15);
+}
+
+.bell-icon {
+    color: red;
+    font-size: 25px;
+}
+
+

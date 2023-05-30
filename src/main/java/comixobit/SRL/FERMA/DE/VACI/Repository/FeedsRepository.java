@@ -87,5 +87,4 @@ public interface FeedsRepository extends JpaRepository<FurajeModel, Integer> {
     @Query(value = "SELECT COALESCE(SUM(costul_total), 0) FROM furaje WHERE MONTH(data_procurarii) = :month AND YEAR(data_procurarii) BETWEEN YEAR(:startDate) AND YEAR(:endDate)", nativeQuery = true)
     int findByDataProcurariiBetweenDecember(@Param("month") Integer month, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
-
 }

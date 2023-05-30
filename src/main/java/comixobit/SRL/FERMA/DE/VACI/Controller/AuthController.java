@@ -53,9 +53,9 @@ public class AuthController {
                                       BindingResult bindingResult) {
         ValidatorPassword validatorPassword = new ValidatorPassword();
         validatorUsers.validate(userModel, bindingResult);
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
             return "/auth/register";
-
+        }
         registerService.register(userModel);
 
         return "redirect:/auth/login";
